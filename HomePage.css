@@ -176,21 +176,48 @@ section {
     padding: 0.5rem 0.7rem;
     background: inherit;
     margin-left: auto;
+    cursor: pointer;
 }
 
-.float-container {
+input:focus, textarea:focus {
+    outline: 3px solid var(--emphasis-color);
+    border: none !important;
+}
+
+/* Social media links */
+.media-mouseover-section {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 20%;
+    height: 100vh;
+}
+
+.media-mouseover-section:hover .media-container {
+    transform: translate(0, -45%);
+}
+
+.media-container {
     display: flex;
     flex-direction: column;
     gap: 0.7rem;
     position: fixed;
     padding: 0.7rem;
     top: 50%;
-    transform: translateY(-45%);
+    transform: translate(100%, -45%);
     right: 0;
-    border: 1px solid var(--emphasis-color);
+    border: 2px solid var(--emphasis-color);
+    background: var(--primary-color);
+    transition: transform 400ms;
 }
 
-.media-icon {
+.icon {
     width: 2.5rem;
     height: 2.5rem;
+}
+
+@media screen and (min-width: 768px) {
+    .media-container {
+        display: flex;
+    }
 }

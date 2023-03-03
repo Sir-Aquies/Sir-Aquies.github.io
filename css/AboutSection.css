@@ -1,5 +1,6 @@
 .about-section {
-    min-height: calc(100vh - 4rem);
+    height: calc(100vh - 4rem);
+    max-height: 53rem;
     padding-top: 1.7rem;
 }
 
@@ -13,7 +14,7 @@
 } */
 
 .jhair-image {
-    width: 100%;
+    width: calc(100% - 1.5rem);
     height: 20rem;
     max-width: 80rem;
     display: block;

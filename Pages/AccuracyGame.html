@@ -1,0 +1,102 @@
+﻿<link href="../css/AccuracyCSS.css" rel="stylesheet" asp-append-version="true"/>
+
+<div id="gameContainer" class="game-container">
+	<div id="scoretab" class="score-tab">
+		<span>Total Shoots: <span id="TotalShoots">0</span></span>
+		<span>Score: <span id="Score">0</span></span>
+		<span>Miss Shoots: <span id="MissShoots">0</span></span>
+		<span>Accuracy: <span id="Accuracy">0%</span></span>
+		<input type="button" value="Reset" id="ResetBtn" style="display: none" onclick="EndGame()" class="normal-btn"/>
+		<div class="timer" id="score-tab-timer">00:00:00</div>
+	</div>
+
+	<div id="Plain" class="plain">
+		<div id="UserTab" class="user-tab">
+			<div class="upper-container">
+				<div class="target-options">
+					<label>Amount</label>
+					<input id="TargetAmount" type="number" value="10" />
+
+					<label>Size</label>
+					<input id="TargetSize" type="range" step="1" value="10" min="1" max="21" />
+
+					<label id="TargetSpeedLabel" style="display: none">Speed</label>
+					<input id="TargetSpeed" type="range" min="3" max="20" style="display: none;" />
+				</div>
+
+				<div id="TargetContainer"></div>
+			</div>
+			
+
+			<div class="lower-container">
+				<div class="input-container-left">
+					<label>Timer</label>
+					<div class="timer" id="timer">00:00:00</div>
+				</div>
+
+				<div class="input-container-center">
+					<input type="button" id="PlayButton" value="Play" />
+				</div>
+
+				<div class="input-container-right">
+					<div>
+						<label class="costum-checkbox">Randomize movement
+							<input type="checkbox" id="RandomBool" onclick="ToggleOptions()" onchange="ToogleCheckbox(this)" />
+							<span class="checkmark"></span>
+						</label>
+					</div>
+					
+					<div>
+						<label class="costum-checkbox">Bouncing target
+							<input type="checkbox" id="BounceBool" onclick="ToggleOptions()" onchange="ToogleCheckbox(this)" />
+							<span class="checkmark"></span>
+						</label>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="results-tab" id="results_tab">
+			Results
+			<button class="close-results" type="button" id="close_results">x</button>
+			<div>Total Shoots: <span id="TotalShoots_result">0</span></div>
+			<div>Score: <span id="Score_result">0</span></div>
+			<div>Miss Shoots: <span id="MissShoots_result">0</span></div>
+			<div>Accuracy: <span id="Accuracy_result">0%</span></div>
+		</div>
+	</div>
+</div>
+
+<script src="../js/AccuracyScript.js" asp-append-version="true"></script>
+<script>
+	function ToogleCheckbox(box) {
+		const randomBool = document.getElementById("RandomBool");
+		const bounceBool = document.getElementById("BounceBool");
+
+		if (box.id === randomBool.id && box.checked) {
+			bounceBool.checked = false;
+		} 
+		else if (box.id === bounceBool.id && box.checked) {
+			randomBool.checked = false;
+		}
+
+
+	}
+
+	function ToggleOptions() {
+		const label = document.getElementById("TargetSpeedLabel");
+		const input = document.getElementById("TargetSpeed");
+
+		const randomBool = document.getElementById("RandomBool");
+		const bounceBool = document.getElementById("BounceBool");
+
+		if (randomBool.checked || bounceBool.checked) {
+			label.style.display = "block";
+			input.style.display = "block";
+		} 
+		else {
+			label.style.display = "none";
+			input.style.display = "none";
+		}
+	}
+</script>
