@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathcing Game</title>
+    <link rel="stylesheet" href="https://necolas.github.io/normalize.css/7.0.0/normalize.css">
+</head>
+<body>
+	<link rel="stylesheet" href="../css/MatchingCSS.css" asp-append-version="true"/>
+
+	<div id="upper-cover" class="upper-game-cover"></div>
+
+	<div class="center-tab" id="center-tab">
+		<div class="menu" id="menu">
+			<label>Select the size</label>
+
+			<input type="number" placeholder="Insert size" onblur="InputCheck(this)" id="size-input" step="2" value="12" onmousewheel="" />
+			<span class="error-message" id="error"></span>
+
+			<input type="button" value="Start game" class="start-btn" onclick="StartGame()"/>
+		</div>
+
+		<div class="menu" id="second-menu">
+			<label>Congratulations!</label>
+			<label>You completed a <span id="size-display-finnish"></span> game in <span id="total-moves-finnish"></span></label>
+			<input type="number" placeholder="Insert size" onblur="InputCheck(this)" id="second-size-input" step="2" value="12" onmousewheel="" />
+			<span class="error-message" id="error"></span>
+
+			<input type="button" value="Play again" class="start-btn" onclick="StartGame()" />
+		</div>
+	</div>
+
+	<div class="background" id="background">
+		<div class="right-panel" id="right-panel">
+			<div>
+				<div>Moves: <span id="total-moves">0</span></div>
+				<div>Initial size: <span id="size-display">0</span></div>
+				<button type="button" onclick="ResetGame()" class="start-btn">Reset</button>
+			</div>
+		</div>
+	</div>
+
+	<div id="lower-cover" class="lower-game-cover"></div>
+
+	<script src="../js/AccuracyScript.js" asp-append-version="true"></script>
+</body>
+</html>
+
+
