@@ -4,12 +4,6 @@
 	/*cursor: url(../images/AccuracyCursor.png), auto;*/
 }
 
-/* old size: 5.64 KB (5,784 bytes) */
-
-html {
-	height: 100vh;
-}
-
 @font-face {
 	font-family: "Pixels";
 	src: url(../Fonts/Silkscreen/slkscr.ttf);
@@ -21,7 +15,8 @@ html {
 	font-weight: bold;
 }
 
-:root {
+html {
+	height: 100vh;
 	--primary: #0a1a2f;
 	--secondary: #04373b;
 	--tertiary: #1a644e;
@@ -36,6 +31,18 @@ body {
 	overflow: hidden;
 	position: relative;
 	height: 100%;
+}
+
+@media screen and (max-width: 480px) {
+	body {
+		font-size: 1vh;
+	}
+}
+
+@media screen and (max-width: 560px) {
+	body {
+		font-size: 2vh;
+	}
 }
 
 .game-container {
@@ -82,20 +89,35 @@ body {
 	display: none;
 	justify-content: space-around;
 	align-items: center;
-	padding: 0.3rem 0;
+	padding: 0.5rem;
 	border: 0.5vh solid var(--quaternary);
 	border-bottom: none;
+	font-size: 3vh;
 }
 
 .score-tab > .timer {
 	display: none;
-	font-size: 3vh;
-	height: fit-content;
+	margin: initial;
+	font-size: inherit;
 }
 
-.normal-btn {
-	font-size: 3vh;
-	border: 0.2vh solid var(--quaternary);
+@media screen and (max-width: 480px) {
+	.score-tab {
+		justify-content: space-between	;
+		flex-wrap: wrap;
+	}
+}
+
+@media screen and (max-width: 480px) {
+	.score-tab input[type="button"] {
+		font-size: 2vh;
+	}
+}
+
+@media screen and (max-width: 560px) {
+	.score-tab input[type="button"] {
+		font-size: 1vh;
+	}
 }
 
 .plain {
@@ -132,11 +154,31 @@ body {
 	padding: 2vh;
 }
 
-input, #TargetContainer {
+@media screen and (max-width: 560px) {
+	.user-tab {
+		font-size: 4vh;
+	}
+}
+
+@media screen and (max-width: 768px) {
+	.user-tab {
+		width: 100%;
+		border: none;
+	}
+}
+
+input, button, #TargetContainer {
 	background-color: var(--secondary);
 	border: 0.5vh solid var(--quaternary);
-	margin: 0.3vh;
 	font-family: inherit;
+}
+
+input, button {
+	cursor: pointer;
+}
+
+label {
+	text-align: center;
 }
 
 .target {
@@ -150,12 +192,25 @@ input, #TargetContainer {
 	grid-template-columns: 0.5fr 0.5fr;
 }
 
+@media screen and (max-width: 560px) {
+	.upper-container {
+		grid-template-columns: auto;
+		row-gap: 1.5rem;
+	}
+}
+
 #TargetContainer {
 	padding: 0.5rem;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background-color: var(--secondary);
+}
+
+@media screen and (max-width: 560px) {
+	#TargetContainer {
+		margin: 0 auto;
+		padding: 1rem 2rem;
+	}
 }
 
 .target-options {
@@ -166,37 +221,42 @@ input, #TargetContainer {
 
 .target-options input {
 	width: 80%;
-	background-color: var(--secondary);
-	height: fit-content;
 }
 
-.target-options * {
-	margin: 0 auto;
+#TargetAmount:focus {
+	outline: 0;
+	box-shadow: 0px 0px 30px 5px var(--secondary);
+}
+
+#PlayButton:hover {
+	box-shadow: 0px 0px 30px 5px var(--secondary);
+}
+
+#TargetSpeed, #TargetSpeedLabel {
+	display: none;
 }
 
 .lower-container {
-	width: 100%;
-	display: flex;
+	display: grid;
+	grid-template-columns: auto 30% auto;
 	align-items: center;
 	margin-top: 3vh;
+	text-align: center;
 }
 
-.lower-container > div {
-	width: 33.33%;
+@media screen and (max-width: 560px) {
+	.lower-container {
+		grid-template-columns: auto;
+		row-gap: 1.5rem;
+	}
 }
 
-.input-container-left {
+.lower-container > div:first-child {
 	font-size: 3vh;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-}
-
-.input-container-left > label {
-	line-height: 1.15;
 }
 
 .timer {
+	width: -moz-fit-content;
 	width: fit-content;
 	font-size: 4vh;
 	padding: 0.5rem;
@@ -204,22 +264,7 @@ input, #TargetContainer {
 	line-height: 1;
 	background-color: var(--secondary);
 	border: 0.5vh solid var(--quaternary);
-}
-
-.input-container-center {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.input-container-right {
-	display: flex;
-	flex-wrap: wrap;
-	font-size: 2vh;
-}
-
-.input-container-right > div {
-	white-space: nowrap;
+	margin: 0 auto;
 }
 
 .costum-checkbox {
@@ -227,11 +272,19 @@ input, #TargetContainer {
 	position: relative;
 	padding-left: 2.5vh;
 	font-size: 2vh;
+	text-align: left;
+	white-space: nowrap;
 	cursor: pointer;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
+}
+
+@media screen and (max-width: 560px) {
+	.costum-checkbox {
+		font-size: 2.5vh;
+	}
 }
 
 .costum-checkbox > input {
@@ -255,63 +308,6 @@ input, #TargetContainer {
 
 .costum-checkbox input:checked ~ .checkmark {
 	background-color: var(--quinary);
-}
-
-@media screen and (max-width: 480px) {
-	body {
-		font-size: 1vh;
-	}
-
-	.normal-btn {
-		font-size: 2vh;
-	}
-
-	.score-tab {
-		justify-content: space-between	;
-		flex-wrap: wrap;
-	}
-
-	.upper-container {
-		grid-template-columns: 1fr;
-		row-gap: 2rem;
-	}
-}
-
-@media screen and (max-width: 768px){
-	body {
-		font-size: 2vh;
-	}
-
-	.normal-btn {
-		font-size: 1vh;
-	}
-
-	.user-tab {
-		font-size: 4vh;
-		width: 100%;
-	}
-
-	.lower-container {
-		display: block;
-	}
-
-	.lower-container > div {
-		width: 100%;
-		margin: 1rem 0;
-	}
-
-	.input-container-right {
-		display: block;
-	}
-}
-
-#TargetAmount:focus {
-	outline: 0;
-	box-shadow: 0px 0px 30px 5px var(--secondary);
-}
-
-#PlayButton:hover {
-	box-shadow: 0px 0px 30px 5px var(--secondary);
 }
 
 input[type=range] {

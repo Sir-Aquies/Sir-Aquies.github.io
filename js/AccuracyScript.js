@@ -1,6 +1,9 @@
 ﻿var amount = 1;
 const targetsArray = [];
 
+// file size: 11.9 KB (12,259 bytes)
+//TODO - hide the score tab on mobile, pause button.
+
 //there is no need for this class, it's just that i wrote the code while reading about javascript classes
 //and now i don't want to rewrite it.
 class Target {
@@ -72,78 +75,86 @@ class Target {
 const targetShowcase = CreaterTarget(10, true);
 
 //Every time the value of TargetSize changes we modify the size of the showcase.
-document.getElementById("TargetSize").addEventListener("change", () => { TargetShowcaseSize(); });
-document.getElementById("TargetSize").addEventListener("input", () => { TargetShowcaseSize(); });
-
-document.getElementById('results_tab').addEventListener('click', () => { document.getElementById('results_tab').style.display = 'none'; });
-
-document.getElementById('timer').addEventListener('click', function () {
-	ClickTimer(this);
-});
-
-function ClickTimer(timer) {
-	let text = '';
-	let controller = new AbortController();
-
-	timer.style.boxShadow = '0px 0px 30px 5px var(--secondary)';
-
-	document.addEventListener('keydown', function (key) {
-		if (key.key == 'Backspace') {
-			if (text.length > 0) {
-				text = text.slice(0, text.length - 1);
-			}
-		}
-		else if (key.key.match(/[0-9]/g) && text.length < 6) {
-			text += key.key;
-		}
-
-		const array = text.split('');
-		array.reverse();
-
-		let ss = '';
-		let mm = '';
-		let hh = '';
-
-		for (let i = 0; i < array.length; i++) {
-			if (i < 2) {
-				ss += array[i];
-			}
-
-			if (i >= 2 && i <= 3) {
-				mm += array[i];
-			}
-
-			if (i >= 4) {
-				hh += array[i];
-			}
-		}
-
-		ss = ss.split('').reverse().join('').padStart(2, '0');
-		mm = mm.split('').reverse().join('').padStart(2, '0');
-		hh = hh.split('').reverse().join('').padStart(2, '0');
-
-		timer.innerHTML = `${hh}:${mm}:${ss}`;
-	}, {signal: controller.signal});
-
-	document.addEventListener('mousedown', UnfocusTimer)
-
-	function UnfocusTimer() {
-		controller.abort();
-		timer.style.boxShadow = 'none';
-		document.removeEventListener('mousedown', UnfocusTimer)
-	}
-}
+document.getElementById('TargetSize').addEventListener('change', () => { TargetShowcaseSize(); });
+document.getElementById('TargetSize').addEventListener('input', () => { TargetShowcaseSize(); });
 
 function TargetShowcaseSize() {
-	const targetSize = document.getElementById("TargetSize");
+	const targetSize = document.getElementById('TargetSize');
 	let size = parseInt(targetSize.value);
 
 	targetShowcase.style.width = `${size}vh`;
 	targetShowcase.style.height = `${size}vh`;
 }
 
-document.getElementById("PlayButton").addEventListener("click", () => { StartGame() });
+//Hide results tab when close results button is clicked.
+document.getElementById('close_results').onclick = (event) => { 
+	event.target.parentElement.style.display = 'none';
+}
 
+function FocusTimer(timer) {
+	let timeString = '';
+	let keyDownController = new AbortController();
+
+	//Make timer look focused.
+	timer.style.boxShadow = '0px 0px 30px 5px var(--secondary)';
+
+	document.addEventListener('keydown', function (key) {
+		//Check for the press key
+		//If the key is Backspace delete last digit.
+		if (key.key == 'Backspace') {
+			if (timeString.length > 0) {
+				timeString = timeString.slice(0, timeString.length - 1);
+			}
+		}
+		//If the key is a number add it at last.
+		else if (key.key.match(/[0-9]/g) && timeString.length < 6) {
+			timeString += key.key;
+		}
+
+		const digits = timeString.split('');
+		digits.reverse();
+
+		//Seconds
+		let ss = '';
+		//Minutes
+		let mm = '';
+		//Hours
+		let hh = '';
+
+		//Put the digits in their corresponding unit.
+		for (let i = 0; i < digits.length; i++) {
+			if (i < 2) {
+				ss += digits[i];
+			}
+
+			if (i >= 2 && i <= 3) {
+				mm += digits[i];
+			}
+
+			if (i >= 4) {
+				hh += digits[i];
+			}
+		}
+
+		//Reverse the digits and pad them with 0s.
+		ss = ss.split('').reverse().join('').padStart(2, '0');
+		mm = mm.split('').reverse().join('').padStart(2, '0');
+		hh = hh.split('').reverse().join('').padStart(2, '0');
+
+		timer.innerHTML = `${hh}:${mm}:${ss}`;
+	}, {signal: keyDownController.signal});
+
+	//Event that unfocus the timer
+	document.addEventListener('mousedown', UnfocusTimer)
+
+	function UnfocusTimer() {
+		keyDownController.abort();
+		//Make timer look unfocus.
+		timer.style.boxShadow = 'none';
+		document.removeEventListener('mousedown', UnfocusTimer)
+	}
+}
+//Continue here
 function StartAnimation() {
 	const container = document.getElementById("gameContainer");
 

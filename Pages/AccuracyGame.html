@@ -10,27 +10,27 @@
 	<link href="../css/AccuracyCSS.css" rel="stylesheet" asp-append-version="true"/>
 
 	<div id="gameContainer" class="game-container">
-		<section id="scoretab" class="score-tab">
+		<article id="scoretab" class="score-tab">
 			<span>Total Shoots: <span id="TotalShoots">0</span></span>
 			<span>Score: <span id="Score">0</span></span>
 			<span>Miss Shoots: <span id="MissShoots">0</span></span>
 			<span>Accuracy: <span id="Accuracy">0%</span></span>
 			<div class="timer" id="score-tab-timer">00:00:00</div>
-			<input type="button" value="Reset" id="ResetBtn" style="display: none" onclick="EndGame()" class="normal-btn"/>
-		</section>
+			<button type="button" id="ResetBtn" onclick="EndGame()">Reset</button>
+		</article>
 
 		<article id="Plain" class="plain">
 			<div id="UserTab" class="user-tab">
 				<div class="upper-container">
 					<div class="target-options">
-						<label>Amount</label>
-						<input id="TargetAmount" type="number" value="10" placeholder="Set amount" />
+						<label for="TargetAmount">Amount</label>
+						<input id="TargetAmount" type="number" value="10" />
 
-						<label>Size</label>
+						<label for="TargetSize">Size</label>
 						<input id="TargetSize" type="range" step="1" value="10" min="1" max="21" />
 
-						<label id="TargetSpeedLabel" style="display: none">Speed</label>
-						<input id="TargetSpeed" type="range" min="3" max="20" placeholder="Set speed" style="display: none;" />
+						<label for="TargetSpeed" id="TargetSpeedLabel">Speed</label>
+						<input id="TargetSpeed" type="range" min="3" max="20"/>
 					</div>
 
 					<div id="TargetContainer"></div>
@@ -38,16 +38,16 @@
 				
 
 				<div class="lower-container">
-					<div class="input-container-left">
+					<div>
 						<label>Timer</label>
-						<div class="timer" id="timer">00:00:00</div>
+						<div class="timer" id="timer" onclick="FocusTimer(this);">00:00:00</div>
 					</div>
 
-					<div class="input-container-center">
-						<input type="button" id="PlayButton" value="Play" />
+					<div>
+						<input type="button" id="PlayButton" value="Play" onclick="StartGame();"/>
 					</div>
 
-					<div class="input-container-right">
+					<div>
 						<div>
 							<label class="costum-checkbox">Randomize movement
 								<input type="checkbox" id="RandomBool" onclick="ToggleOptions()" onchange="ToogleCheckbox(this)" />
@@ -88,8 +88,6 @@
 			else if (box.id === bounceBool.id && box.checked) {
 				randomBool.checked = false;
 			}
-
-
 		}
 
 		function ToggleOptions() {
@@ -111,5 +109,3 @@
 	</script>
 </body>
 </html>
-
-
