@@ -1,78 +1,31 @@
-﻿var amount = 1;
-const targetsArray = [];
+﻿const targetsArray = [];
 
 // file size: 11.9 KB (12,259 bytes)
 //TODO - hide the score tab on mobile, pause button.
 
-//there is no need for this class, it's just that i wrote the code while reading about javascript classes
-//and now i don't want to rewrite it.
-class Target {
-	constructor(size, x, y) {
-		this.target = CreaterTarget(size, false);
-		this.target.style.left = `${x}px`;
-		this.target.style.top = `${y}px`;
-		this.target.addEventListener("mousedown", () => { ShootLand(this) });
-	}
+//User interface objects.
+const gamePlain = document.getElementById('Plain');
+const scoreTab = document.getElementById('scoretab');
+const UserTab = document.getElementById('UserTab');
+const resultsTab = document.getElementById('results_tab');
 
-	ResetPosition() {
-		const plain = document.getElementById("Plain");
+//Score tab objects.
+const totalShoots = document.getElementById('TotalShoots');
+const missShoots = document.getElementById('MissShoots');
+const gameAccuracy = document.getElementById('Accuracy');
+const gameScore = document.getElementById('Score');
 
-		let target_x = Math.floor(Math.random() * (plain.offsetWidth - this.target.offsetWidth));
-		let target_y = Math.floor(Math.random() * (plain.offsetHeight - this.target.offsetHeight));
+//Results tab objects.
+const totalShoots_Result = document.getElementById('TotalShoots_result');
+const missShoots_Result = document.getElementById('MissShoots_result');
+const gameAccuracy_Result = document.getElementById('Accuracy_result');
+const gameScore_Result = document.getElementById('Score_result');
 
-		this.target.style.left = `${ target_x }px`;
-		this.target.style.top = `${ target_y }px`;
-
-		if (this.target.bounce && !this.target.randomize) {
-			switch (Math.floor(Math.random() * 3)) {
-				case 0:
-					this.target.dx = 0;
-					break;
-				case 1:
-					this.target.dx = this.target.speed;
-					break;
-				case 2:
-					this.target.dx = -this.target.speed;
-					break;
-			}
-
-			switch (Math.floor(Math.random() * 3)) {
-				case 0:
-					this.target.dy = 0;
-					break;
-				case 1:
-					this.target.dy = this.target.speed;
-					break;
-				case 2:
-					this.target.dy = -this.target.speed;
-					break;
-			}
-
-			//If both directions are equal to zero, change the value of one.
-			if (this.target.dx === 0 && this.target.dy === 0) {
-				if (Math.floor(Math.random() * 2) === 1) {
-					this.target.dx = Math.floor(Math.random() * 2) ? this.target.speed : -this.target.speed;
-				}
-				else {
-					this.target.dy = Math.floor(Math.random() * 2) ? this.target.speed : -this.target.speed;
-				}
-			}
-		}
-	}
-
-	Resize(w, h) {
-		this.target.style.width = `${w}vh`;
-		this.target.style.height = `${h}vh`;
-	}
-
-	ReLocate(x, y) {
-		this.target.style.left = `${x}px`;
-		this.target.style.top = `${y}px`;
-	}
-}
 
 //Create a target that will work as a showcase for the size of all the targets.
-const targetShowcase = CreaterTarget(10, true);
+const targetShowcase = CreaterTarget(10);
+document.getElementById('TargetContainer').appendChild(targetShowcase);
+targetShowcase.style.position = 'relative';
 
 //Every time the value of TargetSize changes we modify the size of the showcase.
 document.getElementById('TargetSize').addEventListener('change', () => { TargetShowcaseSize(); });
@@ -154,238 +107,285 @@ function FocusTimer(timer) {
 		document.removeEventListener('mousedown', UnfocusTimer)
 	}
 }
-//Continue here
-function StartAnimation() {
-	const container = document.getElementById("gameContainer");
 
-	container.className = "game-container transition-class";
+function StartGameAnimation() {
+	const container = document.getElementById('gameContainer');
+
+	container.className = 'game-container start-game-animation';
 
 	return new Promise(resolve => {
 		setTimeout(() => {
 			resolve('resolved');
-		}, 500);
+		}, 750);
 	});
 }
 
-function EndAnimation() {
-	const container = document.getElementById("gameContainer");
+function EndGameAnimation() {
+	const container = document.getElementById('gameContainer');
 
 	return new Promise(resolve => {
 		setTimeout(() => {
-			container.className = "game-container";
+			container.className = 'game-container';
 			resolve('resolved'); 
-		}, 1000);
+		}, 750);
 	});
 }
-let clearTimer = 0;
+
+let scoreTabTimerId = 0;
 
 async function StartGame() {
-	const amount = parseInt(document.getElementById("TargetAmount").value);
+	const amountOfTargets = parseInt(document.getElementById('TargetAmount').value);
 
-	if (amount <= 0 || amount > 20) {
-		document.getElementById("TargetAmount").value = 20;
+	if (amountOfTargets <= 0 || amountOfTargets > 20) {
+		document.getElementById('TargetAmount').value = 20;
 		return;
 	}
 
-	await StartAnimation();
+	await StartGameAnimation();
 
-	const targetSize = document.getElementById("TargetSize").value;
-	const bounceBool = document.getElementById("BounceBool").checked;
-	const randomBool = document.getElementById("RandomBool").checked;
-	const plain = document.getElementById("Plain");
+	ToggleUserInterface(true);
 
-	document.getElementById('results_tab').style.display = 'none';
-	document.getElementById("ResetBtn").style.display = "block";
-	document.getElementById("scoretab").style.display = "flex";
-	document.getElementById("UserTab").style.display = "none";
-
-	let isTime = document.getElementById('timer').innerHTML.split(':');
-
-	let ss = isTime[2];
-	let mm = isTime[1];
-	let hh = isTime[0];
-
-	let totalTime = 0;
-	if (ss.length !== 0) totalTime += parseInt(ss);
-	if (mm.length !== 0) totalTime += parseInt(mm) * 60;
-	if (hh.length !== 0) totalTime += parseInt(hh) * 3600;
+	let totalTime = GetTimeFromUserTabTimer();
 
 	if (totalTime > 0) {
-		const timer = document.getElementById('score-tab-timer');
-		timer.style.display = 'block';
-		timer.innerHTML = document.getElementById('timer').innerHTML;
+		SetScoreTabTimer(totalTime);
+	}
 
-		clearTimer = setInterval(() => {
+	SetTargetsInGame(amountOfTargets, gamePlain);
+
+	gamePlain.addEventListener('mousedown', Shoot);
+	await EndGameAnimation();
+
+	function GetTimeFromUserTabTimer() {
+		const timerDigits = document.getElementById('user-tab-timer').innerHTML.split(':');
+
+		let ss = timerDigits[2];
+		let mm = timerDigits[1];
+		let hh = timerDigits[0];
+
+		let totalTime = 0;
+		if (ss.length !== 0) totalTime += parseInt(ss);
+		if (mm.length !== 0) totalTime += parseInt(mm) * 60;
+		if (hh.length !== 0) totalTime += parseInt(hh) * 3600;
+
+		return totalTime;
+	}
+
+	function SetScoreTabTimer(totalTime) {
+		const scoreTabTimer = document.getElementById('score-tab-timer');
+		//Display timer as it is hidden by default.
+		scoreTabTimer.style.display = 'block';
+		//Set the initial time from the timer in user-tab.
+		scoreTabTimer.innerHTML = document.getElementById('user-tab-timer').innerHTML;
+
+		scoreTabTimerId = setInterval(() => {
 			totalTime--;
 
+			//Convert totalTime wich is in seconds to seconds, minutes and hours units.
+			let ss = Math.floor(totalTime % 60).toString().padStart(2, '0');
+			let mm = Math.floor((totalTime / 60) % 60).toString().padStart(2, '0');
+			let hh = Math.floor((totalTime / 3600) % 100).toString().padStart(2, '0');
+
+			scoreTabTimer.innerHTML = `${hh}:${mm}:${ss}`;
+
 			if (totalTime <= 0) {
-				clearInterval(clearTimer);
-				EndGame();
+				clearInterval(scoreTabTimerId);
+				EndGame();	
 			}
-
-			let seconds = totalTime;
-
-			let ss = Math.floor(seconds % 60).toString().padStart(2, '0');
-
-			let mm = Math.floor((seconds / 60) % 60).toString().padStart(2, '0');
-
-			let hh = Math.floor((seconds / 3600) % 100).toString().padStart(2, '0');
-
-			timer.innerHTML = `${hh}:${mm}:${ss}`;
 		}, 1000)
 	}
-
-	for (var i = 0; i < amount; i++) {
-		var TargetClass = new Target(parseInt(targetSize));
-		TargetClass.ResetPosition();
-
-		if (bounceBool || randomBool) {
-			const speed = parseInt(document.getElementById("TargetSpeed").value);
-
-			const tgt = TargetClass.target;
-			tgt.speed = speed;
-			//Give a direction to the target, either 0, positive speed or negative speed.
-			switch (Math.floor(Math.random() * 3)) {
-				case 0:
-					tgt.dx = 0;
-					break;
-				case 1:
-					tgt.dx = tgt.speed;
-					break;
-				case 2:
-					tgt.dx = -tgt.speed;
-					break;
-			}
-
-			switch (Math.floor(Math.random() * 3)) {
-				case 0:
-					tgt.dy = 0;
-					break;
-				case 1:
-					tgt.dy = tgt.speed;
-					break;
-				case 2:
-					tgt.dy = -tgt.speed;
-					break;
-			}
-
-			//If both directions are equal to zero, change the value of one.
-			if (tgt.dx === 0 && tgt.dy === 0) {
-				if (Math.floor(Math.random() * 2) === 1) {
-					tgt.dx = Math.floor(Math.random() * 2) ? tgt.speed : -tgt.speed;
-				}
-				else {
-					tgt.dy = Math.floor(Math.random() * 2) ? tgt.speed : -tgt.speed;
-				}
-			}
-
-			tgt.bounce = setInterval(function () {
-				let x = parseInt(tgt.style.left);
-				x += tgt.dx;
-				tgt.style.left = `${x}px`;
-
-				let y = parseInt(tgt.style.top);
-				y += tgt.dy;
-				tgt.style.top = `${y}px`;
-
-				if (tgt.offsetLeft >= (plain.offsetWidth - tgt.clientWidth)) {
-					tgt.dx = -tgt.speed;
-				}
-				else if (tgt.offsetLeft <= 0) {
-					tgt.dx = tgt.speed;
-				}
-
-				if (tgt.offsetTop >= (plain.offsetHeight - tgt.clientHeight)) {
-					tgt.dy = -tgt.speed;
-				}
-				else if (tgt.offsetTop <= 0) {
-					tgt.dy = tgt.speed;
-				}
-			}, 20);
-
-			if (randomBool) {
-				tgt.randomize = setInterval(function () {
-					switch (Math.floor(Math.random() * 3)) {
-						case 0:
-							tgt.dx = 0;
-							break;
-						case 1:
-							tgt.dx = tgt.speed;
-							break;
-						case 2:
-							tgt.dx = -tgt.speed;
-							break;
-					}
-
-					switch (Math.floor(Math.random() * 3)) {
-						case 0:
-							tgt.dy = 0;
-							break;
-						case 1:
-							tgt.dy = tgt.speed;
-							break;
-						case 2:
-							tgt.dy = -tgt.speed;
-							break;
-					}
-				}, 500);
-			}
-		}
-
-		targetsArray.push(TargetClass);
-	}
-
-	plain.addEventListener("mousedown", Shoot);
-	await EndAnimation();
 }
 
-function ResultsScreen() {
-	document.getElementById('results_tab').style.display = 'block';
+function SetTargetsInGame(amountOfTargets, plain) {
+	const targetSize = parseInt(document.getElementById('TargetSize').value);
+	const bounceMode = document.getElementById('BounceBool').checked;
+	const randomMovementMode = document.getElementById('RandomBool').checked;
 
-	const totalResult = document.getElementById('TotalShoots_result');
-	const MissResult = document.getElementById('MissShoots_result');
-	const AccuracyResult = document.getElementById('Accuracy_result');
-	const ScoreResult = document.getElementById('Score_result');
+	for (var i = 0; i < amountOfTargets; i++) {
+		const newTarget = CreaterTarget(targetSize);
+		//Add an event to the path child of the svg (target),
+		newTarget.firstChild.addEventListener('mousedown', (event) => {
+			event.stopPropagation();
+			ShootLand(newTarget);
+		});
+		
+		plain.appendChild(newTarget);
 
-	totalResult.innerHTML = document.getElementById("TotalShoots").innerHTML
-	MissResult.innerHTML = document.getElementById("MissShoots").innerHTML
-	AccuracyResult.innerHTML = document.getElementById("Accuracy").innerHTML
-	ScoreResult.innerHTML = document.getElementById("Score").innerHTML
+		newTarget.ResetPosition = function() {
+			ResetTargetPosition(newTarget, plain);
+		};
+
+		newTarget.ResetPosition();
+
+		if (bounceMode || randomMovementMode) {
+			//SetGameModes sets the bounce mode by default,
+			//random movement mode is just an extension of the bounce mode.
+			SetGameModes(newTarget, plain, randomMovementMode);
+		}
+
+		targetsArray.push(newTarget);
+	}
+}
+
+function SetGameModes(target, plain, randomMovementMode = false) {
+	//Set the original speed to the target object.
+	target.speed = parseInt(document.getElementById('TargetSpeed').value);
+
+	//Set dx and dy fields to the target object.
+	RandomizeTargetDirection(target);
+
+	SetBounceMode(target, plain);
+
+	if (randomMovementMode) {
+		SetRandomMovementMode(target);
+	}
+
+	function SetBounceMode(target, plain) {
+		target.bounceIntervalId = setInterval(function () {
+			//Modify target position by their direction.
+			let x = parseInt(target.style.left);
+			target.style.left = `${x += target.dx}px`;
+	
+			let y = parseInt(target.style.top);
+			target.style.top = `${y += target.dy}px`;
+	
+			if (x >= (plain.offsetWidth - target.clientWidth)) {
+				target.dx = -target.speed;
+			}
+			else if (x <= 0) {
+				target.dx = target.speed;
+			}
+	
+			if (y >= (plain.offsetHeight - target.clientHeight)) {
+				target.dy = -target.speed;
+			}
+			else if (y <= 0) {
+				target.dy = target.speed;
+			}
+		}, 20);
+	}
+
+	function SetRandomMovementMode(target) {
+		target.randomizeIntervalId = setInterval(function () {
+			switch (Math.floor(Math.random() * 3)) {
+				case 0:
+					target.dx = 0;
+					break;
+				case 1:
+					target.dx = target.speed;
+					break;
+				case 2:
+					target.dx = -target.speed;
+					break;
+			}
+
+			switch (Math.floor(Math.random() * 3)) {
+				case 0:
+					target.dy = 0;
+					break;
+				case 1:
+					target.dy = target.speed;
+					break;
+				case 2:
+					target.dy = -target.speed;
+					break;
+			}
+		}, 500);
+	}
+}
+
+function ResetTargetPosition(target, plain) {
+	//Give a random position base on the game plain.
+	target.style.left = `${ Math.floor(Math.random() * (plain.offsetWidth - target.clientWidth)) }px`;
+	target.style.top = `${ Math.floor(Math.random() * (plain.offsetHeight - target.clientHeight)) }px`;
+	
+	if (Number.isNaN(target.bounceIntervalId) && !Number.isNaN(target.randomizeIntervalId)) {
+		RandomizeTargetDirection(target);
+	}
+}
+
+function RandomizeTargetDirection(target) {
+	//Give an initial direction (dx, dy) to the target.
+	switch (Math.floor(Math.random() * 3)) {
+		case 0:
+			target.dx = 0;
+			break;
+		case 1:
+			target.dx = target.speed;
+			break;
+		case 2:
+			target.dx = -target.speed;
+			break;
+	}
+
+	switch (Math.floor(Math.random() * 3)) {
+		case 0:
+			target.dy = 0;
+			break;
+		case 1:
+			target.dy = target.speed;
+			break;
+		case 2:
+			target.dy = -target.speed;
+			break;
+	}
+
+	//If both directions are equal to zero, change the value of one.
+	if (target.dx === 0 && target.dy === 0) {
+		if (Math.floor(Math.random() * 2) === 1) {
+			target.dx = Math.floor(Math.random() * 2) ? target.speed : -target.speed;
+		}
+		else {
+			target.dy = Math.floor(Math.random() * 2) ? target.speed : -target.speed;
+		}
+	}
 }
 
 async function EndGame() {
-	await StartAnimation();
+	await StartGameAnimation();
 
-	clearInterval(clearTimer);
-	ResultsScreen();
+	clearInterval(scoreTabTimerId);
 
-	document.getElementById("TotalShoots").innerHTML = 0;
-	document.getElementById("MissShoots").innerHTML = 0;
-	document.getElementById("Accuracy").innerHTML = "0%";
-	document.getElementById("ResetBtn").style.display = "none";
-	document.getElementById("UserTab").style.display = "block";
-	document.getElementById("scoretab").style.display = "none";
-	document.getElementById("Score").innerHTML = 0;
-	const plain = document.getElementById("Plain");
+	ToggleUserInterface(false);
 
-	amount = 0;
+	gamePlain.removeEventListener('mousedown', Shoot);
 
-	targetsArray.forEach(function (value) {
-		clearInterval(value.target.randomize);
-		clearInterval(value.target.bounce);
-		value.target.remove();
+	//Remove all targets and their intervals.
+	targetsArray.forEach(function (target) {
+		clearInterval(target.randomizeIntervalId);
+		clearInterval(target.bounceIntervalId);
+		target.remove();
 	});
 
 	targetsArray.splice(0, targetsArray.length);
 
-	plain.removeEventListener("mousedown", Shoot);
+	await EndGameAnimation();
+}
 
-	await EndAnimation();
+function ToggleUserInterface(show) {
+	resultsTab.style.display = show ? 'none' : 'block';
+	scoreTab.style.display = show ? 'flex' : 'none';
+	UserTab.style.display = show ? 'none': 'block';
+
+	if (!show) 
+	SetResultsTab();
+}
+
+function SetResultsTab() {
+	//Put the score tab object's values in the results tab objects.
+	totalShoots_Result.innerHTML = totalShoots.innerHTML;
+	missShoots_Result.innerHTML = missShoots.innerHTML;
+	gameAccuracy_Result.innerHTML = gameAccuracy.innerHTML;
+	gameScore_Result.innerHTML = gameScore.innerHTML;
+
+	//Reset their values.
+	totalShoots.innerHTML = 0;
+	missShoots.innerHTML = 0;
+	gameAccuracy.innerHTML = '0%';
+	gameScore.innerHTML = 0;
 }
 
 function Shoot() {
-	const totalShoots = document.getElementById("TotalShoots");
-
 	let currentShoots = parseInt(totalShoots.innerHTML);
 	currentShoots++;
 	totalShoots.innerHTML = currentShoots;
@@ -394,41 +394,29 @@ function Shoot() {
 	MissShoots();
 }
 
-function ShootLand(CurrTarget) {
-	event.stopPropagation();
-	const totalShoots = document.getElementById("TotalShoots");
-	const score = document.getElementById("Score");
-
-	let currentScore = parseInt(score.innerHTML);
-	currentScore++;
-	score.innerHTML = currentScore;
+function ShootLand(target) {
+	let currentScore = parseInt(gameScore.innerHTML);
+	// currentScore++;
+	gameScore.innerHTML = ++currentScore;
 
 	let currentShoots = parseInt(totalShoots.innerHTML);
-	currentShoots++;
-	totalShoots.innerHTML = currentShoots;
+	// currentShoots++;
+	totalShoots.innerHTML = ++currentShoots;
 
 	AccuracyCalculation();
-	CurrTarget.ResetPosition();
+	target.ResetPosition();
 }
 
 function MissShoots() {
-	const score = document.getElementById("Score");
-	const totalShoots = document.getElementById("TotalShoots");
-	const missShoots = document.getElementById("MissShoots");
-
 	let currentShoots = parseInt(totalShoots.innerHTML);
-	let currentScore = parseInt(score.innerHTML);
+	let currentScore = parseInt(gameScore.innerHTML);
 
 	missShoots.innerHTML = currentShoots - currentScore;
 }
 
 function AccuracyCalculation() {
-	const totalShoots = document.getElementById("TotalShoots");
-	const accuracy = document.getElementById("Accuracy");
-	const score = document.getElementById("Score");
-
 	let currentShoots = parseInt(totalShoots.innerHTML);
-	let currentScore = parseInt(score.innerHTML);
+	let currentScore = parseInt(gameScore.innerHTML);
 
 	if (currentShoots === 0) {
 		return;
@@ -437,25 +425,20 @@ function AccuracyCalculation() {
 	let acc = (currentScore / currentShoots) * 100;
 	acc = Math.round(acc * 100) / 100;
 
-	accuracy.innerHTML = acc + "%";
+	gameAccuracy.innerHTML = acc + "%";
 }
 
-function CreaterTarget(size, show) {
-	const targetdiv = document.createElement("div");
+function CreaterTarget(size) {
+	const target = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+	target.classList.add('target');
+	target.setAttribute('viewBox', '0 0 14 14');
+	target.style.height = `${size}vh`;
+	target.style.width = `${size}vh`;
 
-	targetdiv.className = 'target';
-	targetdiv.style.height = `${size}vh`;
-	targetdiv.style.width = `${size}vh`;
-	targetdiv.id = `target_${amount}`;
-	amount++;
+	const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+	//path is 14 x 14 circle
+	path.setAttribute('d', 'M 0 5 L 0 9 L 1 9 L 1 11 L 2 11 L 2 12 L 3 12 L 3 13 L 5 13 L 5 14 L 9 14 L 9 13 L 11 13 L 11 12 L 12 12 L 12 11 L 13 11 L 13 9 L 14 9 L 14 5 L 13 5 L 13 3 L 12 3 L 12 2 L 11 2 L 11 1 L 9 1 L 9 0 L 5 0 L 5 1 L 3 1 L 3 2 L 2 2 L 2 3 L 1 3 L 1 5 L 0 5');
+	target.appendChild(path);
 
-	if (show == true) {
-		document.getElementById("TargetContainer").appendChild(targetdiv);
-		targetdiv.style.position = 'relative';
-	}
-	else {
-		document.getElementById("Plain").appendChild(targetdiv);
-	}
-
-	return targetdiv;
+	return target;
 }

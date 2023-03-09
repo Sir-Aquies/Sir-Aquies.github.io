@@ -48,39 +48,27 @@ body {
 .game-container {
 	height: 100%;
 	position: relative;
+	top: 0;
+	left: 0;
+	/* When the game starts flex prevents plain from overflowing */
 	display: flex;
 	flex-direction: column;
 }
 
-.transition-class {
-	animation-name: game-transition;
-	animation-duration: 1s;
-	animation-fill-mode: forwards;
-	animation-timing-function: ease-out;
+.start-game-animation {
+	animation: game-transition 1.5s ease-out 0s 1 forwards;
 }
 
 @keyframes game-transition {
 	50% {
-		bottom: 100%;
-		left: 0px;
+		top: -100%;
 	}
 
-	54% {
-		top: -1200px;
-		left: 100%;
-	}
-
-	55% {
+	50.0000001% {
 		top: 100%;
-		left: 100%;
 	}
 
-	70% {
-		top: 100%;
-		left: 0px;
-	}
-
-	100% {
+	80% {
 		top: 0px;
 	}
 }
@@ -121,7 +109,7 @@ body {
 }
 
 .plain {
-	height: 100%;
+	flex-grow: 1; 
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -138,15 +126,12 @@ body {
 }
 
 .close-results-button {
-	background: transparent;
-	cursor: pointer;
-	border: inherit;
-	width: 5vh; 
 	height: 5vh;
 	line-height: 0;
 	position: absolute;
 	right: 0.5vh;
 	top: 0.5vh;
+	user-select: none;
 }
 
 .user-tab {
@@ -181,10 +166,18 @@ label {
 	text-align: center;
 }
 
-.target {
+/* .target {
 	position: absolute;
 	background-color: var(--quinary);
 	border-radius: 50%;
+} */
+
+.target {
+	position: absolute;
+}
+
+.target path {
+	fill: var(--quinary);
 }
 
 .upper-container {
