@@ -91,9 +91,15 @@ section {
     row-gap: 0.8rem;
     column-gap: 0.8rem;
     grid-template-rows: auto;
-    max-width: 60rem;
+    max-width: 65rem;
     margin-left: auto;
     margin-right: auto;
+}
+
+@media screen and (min-width: 768px) {
+    .project-gallery {
+        grid-template-columns: 0.5fr 0.5fr;
+    }
 }
 
 .project-box {
@@ -108,7 +114,6 @@ section {
     margin: 0 auto;
     max-width: calc(100% - 0.4rem);
     height: 280px;
-    border-radius: 7px;
 }
 
 .project-box h1 {
@@ -135,12 +140,6 @@ section {
     margin: 1rem auto;
     font-size: 1.7em;
     text-align: center;
-}
-
-@media screen and (min-width: 768px) {
-    .project-gallery {
-        grid-template-columns: 0.5fr 0.5fr;
-    }
 }
 
 .email-box {

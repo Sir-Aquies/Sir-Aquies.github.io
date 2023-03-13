@@ -13,7 +13,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -34,136 +34,105 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-function InputCheck(input) {
+function SizeCheck(input) {
     var size = parseInt(input.value);
-    var error = document.getElementById("error");
+    var errorMessage = document.getElementById("error-message");
     if (size % 2 !== 0) {
         input.value = (size + 1).toString();
-        error.innerHTML = "Size must be an even number";
+        errorMessage.innerHTML = "Size must be an even number";
         return false;
     }
     if (size <= 0) {
         input.value = "12";
-        error.innerHTML = "Size can not be negative";
+        errorMessage.innerHTML = "Size can not be negative";
         return false;
     }
     if (size > 1866) {
-        error.innerHTML = "Max size is 1866";
+        errorMessage.innerHTML = "Max size is 1866";
         input.value = "1866";
         return false;
     }
     if (size % 2 === 0) {
-        error.innerHTML = "";
+        errorMessage.innerHTML = "";
         return true;
     }
     return false;
 }
-function GameCover(width) {
+function GameCover(height) {
     var upperCover = document.getElementById("upper-cover");
     var lowerCover = document.getElementById("lower-cover");
-    upperCover.style.height = width;
-    lowerCover.style.height = width;
+    upperCover.style.height = height;
+    lowerCover.style.height = height;
     return new Promise(function (resolve) {
-        setTimeout(function () { resolve(true); }, 1000);
+        setTimeout(function () { resolve(true); }, 1100);
     });
 }
 function StartGame() {
     return __awaiter(this, void 0, void 0, function () {
-        var sizeInput, size, centerTab, menu, RowsACols, gamePanel;
+        var sizeInput, size, AmountOfRowsandCols, gamePanel;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     sizeInput = document.getElementById("size-input");
-                    if (!InputCheck(sizeInput)) return [3 /*break*/, 2];
+                    if (!SizeCheck(sizeInput))
+                        return [2 /*return*/];
                     size = parseInt(sizeInput.value);
                     return [4 /*yield*/, GameCover("50%")];
                 case 1:
                     _a.sent();
-                    centerTab = document.getElementById("center-tab");
-                    centerTab.style.display = "none";
-                    menu = document.getElementById("menu");
-                    menu.style.display = "none";
-                    RowsACols = CalculateRowsAndColumns(size);
+                    //Hide menu user interface.
+                    ToggleUserInterface(true);
+                    AmountOfRowsandCols = CalculateRowsAndColumns(size);
+                    //Pass the size to a top panel element.
                     document.getElementById("size-display").innerHTML = size.toString();
-                    document.getElementById("right-panel").style.display = "flex";
                     gamePanel = document.createElement("div");
                     gamePanel.id = "game-panel";
                     gamePanel.className = "game-panel";
                     document.getElementById("background").appendChild(gamePanel);
-                    CreateCards(RowsACols, gamePanel);
-                    _a.label = 2;
-                case 2: return [2 /*return*/];
+                    CreateCards(AmountOfRowsandCols, gamePanel);
+                    return [2 /*return*/];
             }
         });
     });
 }
-//Array that will contain all the cards when game is started.
-var cards = [];
+//Array that will contain all the cards when game starts.
+var gameCards = [];
 function CreateCards(RowsACols, panel) {
-    cards.splice(0, cards.length);
-    //Create rows and colums, add the respective classes and appendChild the columns to the rows and the rows to the game panel.
-    for (var i_1 = 0; i_1 < RowsACols.rows; i_1++) {
-        var row = document.createElement("div");
-        row.className = "rows";
-        var _loop_1 = function (j) {
-            var cardContainer = document.createElement("div");
-            var card = document.createElement("div");
-            card.className = "cards";
-            var cover = document.createElement("div");
-            cover.className = "card-cover";
-            //Add card and cover to the container as well as the properties and the click event.
-            cardContainer.className = "card-container";
-            cardContainer.card = card;
-            cardContainer.appendChild(card);
-            cardContainer.cover = cover;
-            cardContainer.appendChild(cover);
-            cardContainer.onclick = function () {
-                CompareCard(cardContainer);
-            };
-            cards.push(card);
-            row.appendChild(cardContainer);
-        };
-        for (var j = 0; j < RowsACols.columns; j++) {
-            _loop_1(j);
-        }
-        panel.appendChild(row);
-    }
-    //Just shuffle the array cards with a method that I found on StackOverflow.
-    shuffle(cards);
-    //Add secretId, complete and image values to the cards.
-    //This is done in pairs using half of the array.
+    //Empty array.
+    gameCards.splice(0, gameCards.length);
+    //Create rows and colums, add the respective classes and append the columns to the rows and the rows to the game panel.
+    CreateRowsAndColumns(RowsACols, panel);
+    //Just shuffle the array of cards with a method that I found on StackOverflow.
+    Shuffle(gameCards);
+    //Set the secretId, complete and image fields to the cards in pairs.
     var idArray = [];
-    var _loop_2 = function () {
-        var card1 = cards[i];
-        var card2 = cards[i + cards.length / 2];
-        do {
-            card1.secretId = Math.floor(Math.random() * 994);
-            card2.secretId = card1.secretId;
-            if (idArray.find(function (value) { return value === card1.secretId; }) !== undefined) {
-                card1.secretId = -1;
-            }
-            else {
-                idArray.push(card1.secretId);
-            }
-        } while (card1.secretId === -1);
+    var _loop_1 = function () {
+        var card1 = gameCards[i];
+        //One way to get the second card for the pair.
+        var card2 = gameCards[i + gameCards.length / 2];
+        SetCardsSecretId(card1, card2, idArray);
         card1.complete = false;
         card2.complete = false;
-        var array = [card1, card2];
-        getJSON("https://picsum.photos/v2/list?page=".concat(card1.secretId, "&limit=1"), array);
-        //when the last card is created.
-        if (i + 1 === cards.length / 2) {
-            //create image and add a load event to it.
+        //Set the background image of thr cards.
+        getJSON("https://picsum.photos/v2/list?page=".concat(card1.secretId, "&limit=1"), function (imageId) {
+            //Use the id to get a downgraded in quality version of the image.
+            card1.style.background = "url(https://picsum.photos/id/".concat(imageId, "/").concat(card1.offsetWidth, "/").concat(card1.offsetHeight, ")");
+            card2.style.background = card1.style.background;
+        });
+        //When the last card is created.
+        if (i + 1 === gameCards.length / 2) {
+            //Create image and add a load event to it.
             image = new Image();
             image.addEventListener("load", function () {
                 return __awaiter(this, void 0, void 0, function () {
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0: 
-                            //when image is loaded remove game cover and remove image.
+                            //When image is loaded remove game cover and remove image.
                             //The point is if last image is loaded that means all other image are loaded too.
                             return [4 /*yield*/, GameCover("0")];
                             case 1:
-                                //when image is loaded remove game cover and remove image.
+                                //When image is loaded remove game cover and remove image.
                                 //The point is if last image is loaded that means all other image are loaded too.
                                 _a.sent();
                                 this.remove();
@@ -172,128 +141,148 @@ function CreateCards(RowsACols, panel) {
                     });
                 });
             });
-            //attach the last card source image.
+            //Attach the last card source image.
             image.src = "https://picsum.photos/".concat(card1.offsetWidth, "/").concat(card1.offsetHeight, "?random&secId=").concat(card1.secretId);
         }
     };
     var image;
-    for (var i = 0; i < cards.length / 2; i++) {
-        _loop_2();
+    for (var i = 0; i < gameCards.length / 2; i++) {
+        _loop_1();
+    }
+    function CreateRowsAndColumns(RowsACols, panel) {
+        for (var i_1 = 0; i_1 < RowsACols.rows; i_1++) {
+            //Create a row.
+            var row = document.createElement("div");
+            row.className = "rows";
+            var _loop_2 = function (j) {
+                var cardContainer = document.createElement("div");
+                cardContainer.className = "card-container";
+                var card = document.createElement("div");
+                card.className = "cards";
+                cardContainer.card = card;
+                cardContainer.appendChild(card);
+                var cover = document.createElement("div");
+                cover.className = "card-cover";
+                cardContainer.cover = cover;
+                cardContainer.appendChild(cover);
+                cardContainer.onclick = function () {
+                    CompareCard(cardContainer);
+                };
+                gameCards.push(card);
+                row.appendChild(cardContainer);
+            };
+            //Fill the row with columns (card containers).
+            for (var j = 0; j < RowsACols.columns; j++) {
+                _loop_2(j);
+            }
+            panel.appendChild(row);
+        }
+    }
+    function SetCardsSecretId(card1, card2, idArray) {
+        do {
+            //Set the secretId
+            card1.secretId = Math.floor(Math.random() * 994);
+            card2.secretId = card1.secretId;
+            //Find if the id is repeated.
+            if (idArray.find(function (value) { return value === card1.secretId; }) !== undefined) {
+                card1.secretId = -1;
+            }
+            else {
+                idArray.push(card1.secretId);
+            }
+        } while (card1.secretId === -1);
     }
 }
-function getJSON(url, array) {
+function getJSON(url, callback) {
     var xhttp = new XMLHttpRequest();
     xhttp.open('GET', url);
     xhttp.responseType = 'json';
     xhttp.onload = function () {
         var data = this.response[0];
-        var url = data.download_url;
-        for (var i = 0; i < array.length; i++) {
-            array[i].style.backgroundImage = "url(https://picsum.photos/id/".concat(url.split('/')[4], "/").concat(array[i].offsetWidth, "/").concat(array[i].offsetHeight, ")");
-        }
+        var imageURL = data.download_url;
+        //Use the id of the response.
+        callback(imageURL.split('/')[4]);
     };
     xhttp.send();
 }
 //Array that will contain the card containers when click, only two.
-var compare = [];
-//TODO - fix error when card are click to quick.
+var comparePair = [];
 function CompareCard(cardContainer) {
     return __awaiter(this, void 0, void 0, function () {
         var finnishGame, cardContainer1_1, cardContainer2_1;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    finnishGame = false;
-                    //Add card container to compare array, remove the click event and flip the container.
-                    compare.push(cardContainer);
-                    cardContainer.onclick = null;
-                    cardContainer.style.transform = "rotateY(180deg)";
-                    if (!(compare.length === 2)) return [3 /*break*/, 4];
-                    cardContainer1_1 = compare[0];
-                    cardContainer2_1 = compare[1];
-                    if (!(cardContainer1_1.card.secretId === cardContainer2_1.card.secretId)) return [3 /*break*/, 1];
+            finnishGame = false;
+            //Add card container to compare array, remove the click event and flip the container.
+            comparePair.push(cardContainer);
+            cardContainer.onclick = null;
+            cardContainer.style.transform = "rotateY(180deg)";
+            //when there two cards in the aray, compare their secretId value.
+            if (comparePair.length === 2) {
+                cardContainer1_1 = comparePair[0];
+                cardContainer2_1 = comparePair[1];
+                //if secretId values coincided set complete to true.
+                if (cardContainer1_1.card.secretId === cardContainer2_1.card.secretId) {
                     cardContainer1_1.card.complete = true;
                     cardContainer2_1.card.complete = true;
                     //Checks every complete property in the cards array, if its equal to true set finnishGame variable to true.
-                    finnishGame = cards.every(function (value) {
+                    finnishGame = gameCards.every(function (value) {
                         return value.complete === true;
                     });
-                    return [3 /*break*/, 3];
-                case 1:
-                    //if secretId value are not equal return onclick event to both of the containers.
-                    cardContainer1_1.onclick = function () {
-                        CompareCard(cardContainer1_1);
-                    };
-                    cardContainer2_1.onclick = function () {
-                        CompareCard(cardContainer2_1);
-                    };
-                    //Rotate container back to 0 deg after 500ms.
-                    return [4 /*yield*/, setTimeout(function () {
-                            cardContainer1_1.style.transform = "rotateY(0deg)";
-                            cardContainer2_1.style.transform = "rotateY(0deg)";
-                            return new Promise(function (resolve) {
-                                resolve(true);
-                            });
-                        }, 500)];
-                case 2:
-                    //Rotate container back to 0 deg after 500ms.
-                    _a.sent();
-                    _a.label = 3;
-                case 3:
-                    //Always empty compare array.
-                    compare.splice(0, compare.length);
-                    //Increase the moves by one when two cards are compare.
-                    document.getElementById("total-moves").innerHTML = (parseInt(document.getElementById("total-moves").innerHTML) + 1).toString();
-                    //if finnishGame is true call CompleteGame function.
-                    if (finnishGame) {
-                        CompleteGame();
-                    }
-                    _a.label = 4;
-                case 4: return [2 /*return*/];
+                }
+                else {
+                    //Return the card container back to normal after a moment.
+                    setTimeout(function () {
+                        cardContainer1_1.style.transform = "rotateY(0deg)";
+                        cardContainer2_1.style.transform = "rotateY(0deg)";
+                        //Return the onclick event to both of the containers.
+                        cardContainer1_1.onclick = function () {
+                            CompareCard(cardContainer1_1);
+                        };
+                        cardContainer2_1.onclick = function () {
+                            CompareCard(cardContainer2_1);
+                        };
+                        // return new Promise<boolean>(resolve => {
+                        // 	resolve(true)
+                        // });
+                    }, 500);
+                }
+                //Always empty compare array.
+                comparePair.splice(0, comparePair.length);
+                //Increase the moves by one when two cards are compare.
+                document.getElementById("total-moves").innerHTML = (parseInt(document.getElementById("total-moves").innerHTML) + 1).toString();
+                if (finnishGame) {
+                    CompleteGame();
+                }
             }
-        });
-    });
-}
-//function that will execute when game is completed.
-function CompleteGame() {
-    return __awaiter(this, void 0, void 0, function () {
-        var secondMenu, moves;
-        return __generator(this, function (_a) {
-            document.getElementById("game-panel").remove();
-            cards.splice(0, cards.length);
-            document.getElementById("right-panel").style.display = "none";
-            secondMenu = document.getElementById("second-menu");
-            document.getElementById("center-tab").style.display = "flex";
-            secondMenu.style.display = "block";
-            moves = document.getElementById("total-moves").innerHTML;
-            document.getElementById("total-moves").innerHTML = "0";
-            if (moves === "1") {
-                document.getElementById("total-moves-finnish").innerHTML = moves + " move";
-            }
-            else {
-                document.getElementById("total-moves-finnish").innerHTML = moves + " moves";
-            }
-            document.getElementById("size-display-finnish").innerHTML = document.getElementById("size-display").innerHTML;
             return [2 /*return*/];
         });
     });
 }
-function ResetGame() {
+//Function that will execute when game is completed.
+function CompleteGame() {
     return __awaiter(this, void 0, void 0, function () {
-        var menu;
+        var moves;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, GameCover("50%")];
                 case 1:
                     _a.sent();
+                    //Delete the game panel along with its children.
                     document.getElementById("game-panel").remove();
-                    cards.splice(0, cards.length);
-                    document.getElementById("right-panel").style.display = "none";
-                    document.getElementById("second-menu").style.display = 'none';
+                    //Empty array.
+                    gameCards.splice(0, gameCards.length);
+                    moves = document.getElementById("total-moves").innerHTML;
                     document.getElementById("total-moves").innerHTML = "0";
-                    document.getElementById("center-tab").style.display = "flex";
-                    menu = document.getElementById("menu");
-                    menu.style.display = "block";
+                    if (moves === "1") {
+                        document.getElementById("total-moves-finnish").innerHTML = moves + " move";
+                    }
+                    else {
+                        document.getElementById("total-moves-finnish").innerHTML = moves + " moves";
+                    }
+                    //Pass the size to the second menu.
+                    document.getElementById("size-display-finnish").innerHTML = document.getElementById("size-display").innerHTML;
+                    //Show menu user interface and second menu.
+                    ToggleUserInterface(false, true);
                     return [4 /*yield*/, GameCover("0")];
                 case 2:
                     _a.sent();
@@ -302,12 +291,46 @@ function ResetGame() {
         });
     });
 }
+//When the reset button is clicked
+function ResetGame() {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, GameCover("50%")];
+                case 1:
+                    _a.sent();
+                    document.getElementById("game-panel").remove();
+                    gameCards.splice(0, gameCards.length);
+                    //Show menu user interface.
+                    ToggleUserInterface(false);
+                    return [4 /*yield*/, GameCover("0")];
+                case 2:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function ToggleUserInterface(toggle, ShowSecondMenu) {
+    if (ShowSecondMenu === void 0) { ShowSecondMenu = false; }
+    document.getElementById("top-panel").style.display = toggle ? "flex" : "none";
+    document.getElementById("center-tab").style.display = toggle ? "none" : "grid";
+    document.getElementById("menu").style.display = toggle ? "none" : "flex";
+    document.getElementById("total-moves").innerHTML = "0";
+    if (ShowSecondMenu) {
+        document.getElementById("second-menu").style.display = "flex";
+        document.getElementById("menu").style.display = "none";
+    }
+    else {
+        document.getElementById("second-menu").style.display = "none";
+    }
+}
 function CalculateRowsAndColumns(size) {
-    var divisors = [];
     //if size is 2 just return this value, the method can't figure it out 2.
     if (size === 2) {
         return { rows: 1, columns: 2 };
     }
+    var divisors = [];
     //find all the divisor of size. (there is maybe not need for an array, but is more readable)
     for (var i = 2; i < size; i++) {
         if (size % i === 0) {
@@ -316,28 +339,27 @@ function CalculateRowsAndColumns(size) {
     }
     var pairs = [];
     //finds the pairs of divisors that when multiplicated return the size.
-    divisors.forEach(function (value, index, array) {
-        for (var i = 0; i < array.length; i++) {
-            if (value * array[i] === size) {
+    for (var i_2 = 0; i_2 < divisors.length; i_2++) {
+        for (var j = 0; j < divisors.length; j++) {
+            if (divisors[i_2] * divisors[j] === size) {
                 //Columns have to be bigger than rows.
-                if (value >= array[i]) {
-                    var pair = { rows: array[i], columns: value };
-                    pairs.push(pair);
+                if (divisors[i_2] >= divisors[j]) {
+                    pairs.push({ rows: divisors[j], columns: divisors[i_2] });
                 }
             }
         }
-    });
+    }
     var output = { rows: pairs[0].rows, columns: pairs[0].columns };
     //find the pair whose values a the closest by calculating the average, that is the lowest average.
-    pairs.forEach(function (value) {
+    for (var i_3 = 0; i_3 < pairs.length; i_3++) {
         var average = (output.rows + output.columns) / 2;
-        if (average > (value.rows + value.columns) / 2) {
-            output = value;
+        if (average > (pairs[i_3].rows + pairs[i_3].columns) / 2) {
+            output = pairs[i_3];
         }
-    });
+    }
     return output;
 }
-function shuffle(array) {
+function Shuffle(array) {
     var _a;
     var currentIndex = array.length, randomIndex;
     while (currentIndex != 0) {

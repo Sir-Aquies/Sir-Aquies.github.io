@@ -153,7 +153,7 @@ body {
 }
 
 input, button, #TargetContainer {
-	background-color: var(--secondary);
+	background: var(--secondary);
 	border: 0.5vh solid var(--quaternary);
 	font-family: inherit;
 }
@@ -165,12 +165,6 @@ input, button {
 label {
 	text-align: center;
 }
-
-/* .target {
-	position: absolute;
-	background-color: var(--quinary);
-	border-radius: 50%;
-} */
 
 .target {
 	position: absolute;
@@ -221,6 +215,10 @@ label {
 	box-shadow: 0px 0px 30px 5px var(--secondary);
 }
 
+#PlayButton {
+	padding: 0.3rem;
+}
+
 #PlayButton:hover {
 	box-shadow: 0px 0px 30px 5px var(--secondary);
 }
@@ -233,7 +231,7 @@ label {
 	display: grid;
 	grid-template-columns: auto 30% auto;
 	align-items: center;
-	margin-top: 3vh;
+	margin-top: 2.5vh;
 	text-align: center;
 }
 
