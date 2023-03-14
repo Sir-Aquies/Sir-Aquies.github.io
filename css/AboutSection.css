@@ -16,7 +16,7 @@
 .jhair-image {
     width: calc(100% - 1.5rem);
     height: 20rem;
-    max-width: 80rem;
+    max-width: 60rem;
     display: block;
     margin: 0 auto;
     object-fit: cover;
@@ -25,12 +25,35 @@
 
 .info-container {
     padding: 0.5rem;
-    font-size: 1.3rem;
+    font-size: 1.6rem;
 }
 
-@media screen and (min-width: 520px) {
+.info-container ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0.7rem 0;
+}
+
+@media screen and (min-width: 425px) {
     .info-container {
-        padding: 0.5rem;
+        font-size: 1.8rem;
+    }
+}
+/* html font size increases */
+@media screen and (min-width: 516px) {
+    .info-container {
+        font-size: 1.5rem;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .info-container {
+        font-size: 1.8rem;
+    }
+}
+
+@media screen and (min-width: 928px) {
+    .info-container {
         font-size: 2rem;
     }
 }

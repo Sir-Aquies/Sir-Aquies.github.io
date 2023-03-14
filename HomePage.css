@@ -7,17 +7,16 @@ html {
     min-height: 100%;
     box-shadow: 2px 2px 9px rgba(0, 0, 0, 0.3) inset, 
     -2px -2px 9px rgba(0, 0, 0, 0.3) inset;
-    font-size: 1.1em;
+    font-size: 0.8em;
     color: var(--tertiary-color);
     font-family: sans-serif;
 }
 
-/* :root {
-    --primary-color: #013328;
-    --secondary-color: #E3DCD2;
-    --tertiary-color: #100C0D;
-    --quaternary-color: #CC8B65;
-} */
+@media screen and (min-width: 516px) {
+    html {
+        font-size: 1.1em;
+    }
+}
 
 :root {
     --primary-color: #121212;
@@ -26,9 +25,6 @@ html {
     --quaternary-color: #0f0f0f;
     --emphasis-color: #303F9F;
 }
-
-/* #F0EDCC
-#02343F */
 
 body {
     min-height: 100%;
@@ -43,6 +39,7 @@ body {
     padding: 1.3rem 1.5rem;
     top: 0;
     left: 0;
+    z-index: 2;
     border-bottom: 1px solid var(--emphasis-color);
     font-size: 1.7rem;
     color: var(--secondary-color);
@@ -103,17 +100,19 @@ section {
 }
 
 .project-box {
+    display: grid;
+    align-content: space-between;
     border: 2px solid var(--secondary-color);
-    border-radius: 7px;
+    border-radius: 5px;
     padding: 0.7rem;
-    width: 100%;
+    z-index: 1;
 }
 
 .project-box img {
     display: block;
     margin: 0 auto;
     max-width: calc(100% - 0.4rem);
-    height: 280px;
+    height: auto;
 }
 
 .project-box h1 {

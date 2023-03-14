@@ -1,7 +1,7 @@
 ﻿const targetsArray = [];
 
 // file size: 11.9 KB (12,259 bytes)
-//TODO - hide the score tab on mobile, pause button.
+//TODO - hide the score tab on mobile, pause button and sounds when shooting.
 
 //User interface objects.
 const gamePlain = document.getElementById('Plain');
