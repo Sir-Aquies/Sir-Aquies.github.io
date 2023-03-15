@@ -20,7 +20,7 @@
 <body>
     <main class="main-container">
         <section id="About" class="about-section">
-            <div class="image-container">
+            <div>
                 <img class="jhair-image" src="https://picsum.photos/id/669/4869/3456" alt="Jhair Castillo">
             </div>
 
@@ -45,7 +45,7 @@
             <article class="project-gallery">
                 <div class="project-box">
                     <h1>Social Media Simulator</h1>
-                    <img src="" alt="Social Media Simulator screenshot">
+                    <img class="SMS-image" alt="Social Media Simulator screenshot">
                     <p>
                         Quisque sollicitudin turpis vel feugiat placerat. 
                         Nulla in velit velit. Praesent sit amet justo in dolor eleifend dapibus. 
@@ -63,7 +63,7 @@
 
                 <div class="project-box">
                     <h1>Flexidy</h1>
-                    <img src="" alt="Flexidy screenshot">
+                    <img class="flexidy-image" alt="Flexidy screenshot">
                     <p>
                         Donec quis dui erat. Praesent molestie ipsum ac nibh imperdiet, at varius eros tempus. 
                         Ut eu turpis ut quam egestas euismod. Sed sit amet dictum neque. 
@@ -80,7 +80,9 @@
 
                 <div class="project-box">
                     <h1>Accuracy Game</h1>
-                    <img src="Images/AccuracyScreenshot.png" alt="Accuracy Game screenshot">
+                    <!-- <img src="Images/AccuracyScreenshot.png" alt="Accuracy Game screenshot"> -->
+                    <img class="accuracy-game-image" alt="Accuracy Game screenshot">
+
                     <p>
                         Aim training HTML game with a retro-inspired user interface.
                         The player is free to choose the amount and the size of the targets.
@@ -95,7 +97,8 @@
 
                 <div class="project-box">
                     <h1>Matching Game</h1>
-                    <img src="Images/MatchingScreenshot.png" alt="Matching Game screenshot">
+                    <!-- <img src="Images/MatchingScreenshot.png" alt="Matching Game screenshot"> -->
+                    <img class="matching-project-image" alt="Matching Game screenshot">
                     <p>
                         This HTML game allows players to customize the size of their matching game, with a maximum limit of 1866 cards. 
                         Once the game starts, the player is tasked with finding matching images by flipping over cards. 
@@ -110,8 +113,9 @@
 
         <hr class="separative-line">
 
-        <h1 id="Contact" class="section-title">Contact me</h1>
-        <section>
+        <section class="contact-section">
+            <h1 id="Contact" class="section-title">Contact me</h1>
+
             <form class="email-box">
                 <input type="text" placeholder="Name">
                 <input type="email" placeholder="Email">
@@ -119,26 +123,43 @@
 
                 <textarea rows="7" placeholder="Message"></textarea>
 
-                <input type="submit" value="Send">
+                <article class="extra-contact-info">
+                    <div>
+                        <h2>Social media links</h2>
+
+                        <div class="contact-media-links">
+                            <a href="https://github.com/Sir-Aquies" target="_blank">
+                                <img class="icon" src="Images/github-icon.svg" alt="GitHub icon">
+                            </a>
+                            <a href="https://www.linkedin.com/in/jhair-castillo-311788231/" target="_blank">
+                                <img class="icon" src="Images/linkedin-square-icon.svg" alt="linkedIn icon">
+                            </a>
+                            <a href="Fonts/JhairCastilloResume.pdf" target="_blank">
+                                <img class="icon" src="Images/document-link-icon.svg" alt="Resume">
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <input type="submit" value="Send message">
+                </article>
             </form>
         </section>
-        <footer>
-
-        </footer>
 
         <aside class="media-mouseover-section">
-            <article class="media-container">
+            <article id="media_links" class="media-container">
                 <a href="https://github.com/Sir-Aquies" target="_blank">
                     <img class="icon" src="Images/github-icon.svg" alt="GitHub icon">
                 </a>
                 <a href="https://www.linkedin.com/in/jhair-castillo-311788231/" target="_blank">
                     <img class="icon" src="Images/linkedin-square-icon.svg" alt="linkedIn icon">
                 </a>
-                <a href="#" target="_blank">
+                <a href="Fonts/JhairCastilloResume.pdf" target="_blank">
                     <img class="icon" src="Images/document-link-icon.svg" alt="Resume">
                 </a>
             </article>
         </aside>
     </main>
 </body>
+
+<script src="js/HomeScripts.js"></script>
 </html>
