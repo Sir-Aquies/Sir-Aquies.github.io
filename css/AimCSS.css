@@ -1,5 +1,6 @@
 * {
-	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	        box-sizing: border-box;
 	color: var(--quinary);
 	/*cursor: url(../images/AccuracyCursor.png), auto;*/
 }
@@ -51,12 +52,32 @@ body {
 	top: 0;
 	left: 0;
 	/* When the game starts flex prevents plain from overflowing */
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
+	-ms-flex-direction: column;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
 	flex-direction: column;
 }
 
 .start-game-animation {
-	animation: game-transition 1.5s ease-out 0s 1 forwards;
+	-webkit-animation: game-transition 1.5s ease-out 0s 1 forwards;
+	        animation: game-transition 1.5s ease-out 0s 1 forwards;
+}
+
+@-webkit-keyframes game-transition {
+	50% {
+		top: -100%;
+	}
+
+	50.0000001% {
+		top: 100%;
+	}
+
+	80% {
+		top: 0px;
+	}
 }
 
 @keyframes game-transition {
@@ -75,8 +96,11 @@ body {
 
 .score-tab {
 	display: none;
-	justify-content: space-around;
-	align-items: center;
+	-ms-flex-pack: distribute;
+	    justify-content: space-around;
+	-webkit-box-align: center;
+	    -ms-flex-align: center;
+	        align-items: center;
 	padding: 0.5rem;
 	border: 0.5vh solid var(--quaternary);
 	border-bottom: none;
@@ -91,8 +115,11 @@ body {
 
 @media screen and (max-width: 480px) {
 	.score-tab {
-		justify-content: space-between	;
-		flex-wrap: wrap;
+		-webkit-box-pack: justify;
+		    -ms-flex-pack: justify;
+		        justify-content: space-between	;
+		-ms-flex-wrap: wrap;
+		    flex-wrap: wrap;
 	}
 }
 
@@ -109,17 +136,40 @@ body {
 }
 
 .plain {
-	flex-grow: 1; 
+	/* flex-grow: 1;
+	-ms-flex-positive: 1; */
+	height: 100%;
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
-	justify-content: center;
-	align-items: center;
+	-webkit-box-pack: center;
+	    -ms-flex-pack: center;
+	        justify-content: center;
+	-webkit-box-align: center;
+	    -ms-flex-align: center;
+	        align-items: center;
+	gap: 1rem;
 	position: relative;
 	border: 0.5vh solid var(--quaternary);
 }
 
+@media screen and (max-width: 560px) {
+	.plain {
+		overflow: auto;
+	}
+}
+
+@media screen and (max-width: 760px) {
+	.plain {
+		-webkit-box-orient: vertical;
+		-webkit-box-direction: normal;
+		    -ms-flex-direction: column;
+		        flex-direction: column;
+	}
+}
+
 .results-tab {
 	display: none;
-	margin-left: 5rem;
 	position: relative;
 	border: 0.5vh solid var(--quaternary);
 	padding: 1vh;
@@ -131,7 +181,10 @@ body {
 	position: absolute;
 	right: 0.5vh;
 	top: 0.5vh;
-	user-select: none;
+	-ms-user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	     user-select: none;
 }
 
 .user-tab {
@@ -143,10 +196,19 @@ body {
 	.user-tab {
 		font-size: 4vh;
 	}
+
+	.results-tab {
+		font-size: 3.5vh;
+	}
 }
 
 @media screen and (max-width: 768px) {
 	.user-tab {
+		width: 100%;
+		border: none;
+	}
+
+	.results-tab {
 		width: 100%;
 		border: none;
 	}
@@ -175,12 +237,15 @@ label {
 }
 
 .upper-container {
+	display: -ms-grid;
 	display: grid;
+	-ms-grid-columns: 0.5fr 0.5fr;
 	grid-template-columns: 0.5fr 0.5fr;
 }
 
 @media screen and (max-width: 560px) {
 	.upper-container {
+		-ms-grid-columns: auto;
 		grid-template-columns: auto;
 		row-gap: 1.5rem;
 	}
@@ -188,9 +253,15 @@ label {
 
 #TargetContainer {
 	padding: 0.5rem;
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
-	justify-content: center;
-	align-items: center;
+	-webkit-box-pack: center;
+	    -ms-flex-pack: center;
+	        justify-content: center;
+	-webkit-box-align: center;
+	    -ms-flex-align: center;
+	        align-items: center;
 }
 
 @media screen and (max-width: 560px) {
@@ -201,9 +272,16 @@ label {
 }
 
 .target-options {
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
-	flex-direction: column;
-	align-items: center;
+	-ms-flex-direction: column;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	        flex-direction: column;
+	-webkit-box-align: center;
+	    -ms-flex-align: center;
+	        align-items: center;
 }
 
 .target-options input {
@@ -212,7 +290,8 @@ label {
 
 #TargetAmount:focus {
 	outline: 0;
-	box-shadow: 0px 0px 30px 5px var(--secondary);
+	-webkit-box-shadow: 0px 0px 30px 5px var(--secondary);
+	        box-shadow: 0px 0px 30px 5px var(--secondary);
 }
 
 #PlayButton {
@@ -220,7 +299,8 @@ label {
 }
 
 #PlayButton:hover {
-	box-shadow: 0px 0px 30px 5px var(--secondary);
+	-webkit-box-shadow: 0px 0px 30px 5px var(--secondary);
+	        box-shadow: 0px 0px 30px 5px var(--secondary);
 }
 
 #TargetSpeed, #TargetSpeedLabel {
@@ -228,15 +308,20 @@ label {
 }
 
 .lower-container {
+	display: -ms-grid;
 	display: grid;
+	-ms-grid-columns: auto 30% auto;
 	grid-template-columns: auto 30% auto;
-	align-items: center;
+	-webkit-box-align: center;
+	    -ms-flex-align: center;
+	        align-items: center;
 	margin-top: 2.5vh;
 	text-align: center;
 }
 
 @media screen and (max-width: 560px) {
 	.lower-container {
+		-ms-grid-columns: auto;
 		grid-template-columns: auto;
 		row-gap: 1.5rem;
 	}
@@ -248,6 +333,7 @@ label {
 
 .timer {
 	width: -moz-fit-content;
+	width: -webkit-fit-content;
 	width: fit-content;
 	font-size: 4vh;
 	padding: 0.5rem;
@@ -289,7 +375,9 @@ label {
 .checkmark {
 	position: absolute;
 	top: 50%;
-	transform: translateY(-50%);
+	-webkit-transform: translateY(-50%);
+	    -ms-transform: translateY(-50%);
+	        transform: translateY(-50%);
 	left: 0;
 	height: 2vh;
 	width: 2vh;
@@ -310,6 +398,8 @@ input[type=range] {
 	opacity: 0.7;
 	-webkit-transition: .2s;
 	border: 0;
+	-webkit-transition: opacity .2s;
+	-o-transition: opacity .2s;
 	transition: opacity .2s;
 }
 

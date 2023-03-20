@@ -1,5 +1,6 @@
 * {
-	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	        box-sizing: border-box;
 }
 
 html {
@@ -54,18 +55,26 @@ input, button {
 
 .background {
 	height: 100%;
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
-	flex-direction: column;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	    -ms-flex-direction: column;
+	        flex-direction: column;
 	background-color: var(--primary);
 }
 
 .center-tab {
 	width: 100%;
 	height: 100%;
+	display: -ms-grid;
 	display: grid;
+	-ms-grid-rows: auto 8% auto;
 	grid-template-rows: auto auto;
 	row-gap: 8%;
-	align-content: center;
+	-ms-flex-line-pack: center;
+	    align-content: center;
 	padding: 1rem;
 	position: absolute;
 	left: 0;
@@ -106,9 +115,16 @@ input, button {
 }
 
 .menu {
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
-	flex-direction: column;
-	align-items: center;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	    -ms-flex-direction: column;
+	        flex-direction: column;
+	-webkit-box-align: center;
+	    -ms-flex-align: center;
+	        align-items: center;
 	gap: 0.6rem;
 	margin: auto;
 	border-radius: 5px;
@@ -130,6 +146,7 @@ input, button {
 	height: 0;
 	background: var(--quaternary);
 	-webkit-transition: height 1s ease-in;
+	-o-transition: height 1s ease-in;
 	transition: height 1s ease-in;
 	z-index: 100;
 }
@@ -144,8 +161,11 @@ input, button {
 
 .top-panel {
 	display: none;
-	justify-content: space-around;
-	align-items: center;
+	-ms-flex-pack: distribute;
+	    justify-content: space-around;
+	-webkit-box-align: center;
+	    -ms-flex-align: center;
+	        align-items: center;
 	padding: 0.5rem;
 	font-size: 1.7rem;
 	background: var(--secondary);
@@ -158,19 +178,33 @@ input, button {
 }
 
 .game-panel {
-	flex-grow: 1;
+	-webkit-box-flex: 1;
+	    -ms-flex-positive: 1;
+	        flex-grow: 1;
 	padding: 0.5rem;
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
-	flex-direction: column;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	    -ms-flex-direction: column;
+	        flex-direction: column;
 	gap: 0.5rem;
 	overflow: auto;
 }
 
 .rows {
 	height: 100%;
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
-	flex-flow: row nowrap;
-	align-items: center;
+	-webkit-box-orient: horizontal;
+	-webkit-box-direction: normal;
+	    -ms-flex-flow: row nowrap;
+	        flex-flow: row nowrap;
+	-webkit-box-align: center;
+	    -ms-flex-align: center;
+	        align-items: center;
 	gap: 0.5rem;
 }
 
@@ -186,9 +220,15 @@ input, button {
 	min-height: 150px;
 	max-width: 300px;
 	max-height: 300px;
-	transform-style: preserve-3d;
+	-webkit-transform-style: preserve-3d;
+	        transform-style: preserve-3d;
+	-webkit-transition: -webkit-transform 0.5s;
+	transition: -webkit-transform 0.5s;
+	-o-transition: transform 0.5s;
 	transition: transform 0.5s;
-	transform: rotate3d(0);
+	transition: transform 0.5s, -webkit-transform 0.5s;
+	-webkit-transform: rotate3d(0);
+	        transform: rotate3d(0);
 	border-radius: 5px;
 	/* border: 3px solid var(--tertiary); */
 }
@@ -200,7 +240,8 @@ input, button {
 	background-position: center;
 	background-size: cover;
 	border-radius: 5px;
-	transform: translateZ(10px);
+	-webkit-transform: translateZ(10px);
+	        transform: translateZ(10px);
 	position: absolute;
 }
 
@@ -210,7 +251,8 @@ input, button {
 	background: var(--secondary);
 	border-radius: 4px;
 	position: absolute;
-	transform: translateZ(11px);
+	-webkit-transform: translateZ(11px);
+	        transform: translateZ(11px);
 	cursor: pointer;
 }
 

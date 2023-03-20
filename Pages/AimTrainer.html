@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accuracy Game</title>
+    <title>Aim Trainer</title>
     <link rel="stylesheet" href="https://necolas.github.io/normalize.css/7.0.0/normalize.css">
 </head>
 <body>
-	<link href="../css/AccuracyCSS.css" rel="stylesheet" asp-append-version="true"/>
+	<link href="../css/AimCSS.css" rel="stylesheet" asp-append-version="true"/>
 
 	<div id="gameContainer" class="game-container">
 		<article id="scoretab" class="score-tab">
@@ -48,7 +48,7 @@
 
 					<div>
 						<div>
-							<label class="costum-checkbox">Randomize movement
+							<label class="costum-checkbox">Random movement
 								<input type="checkbox" id="RandomBool" onclick="ToggleOptions()" onchange="ToogleCheckbox(this)" />
 								<span class="checkmark"></span>
 							</label>
@@ -75,7 +75,7 @@
 		</article>
 	</div>
 
-	<script src="../js/AccuracyScript.js"></script>
+	<script src="../js/AimScript.js"></script>
 	<script>
 		function ToogleCheckbox(box) {
 			const randomBool = document.getElementById("RandomBool");

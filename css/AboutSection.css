@@ -1,61 +1,56 @@
 .about-section {
-    height: calc(100vh - 4rem);
-    max-height: 53rem;
-    padding-top: 1.7rem;
+    padding-top: 1.5rem;
 }
 
-.about-section h1 {
-    text-align: center;
-    margin: 0 0 0.5rem;
-}
-
-.jhair-image {
+.about-section-image {
     width: calc(100% - 1.5rem);
     height: 20rem;
     max-width: 60rem;
     display: block;
     margin: 0 auto 1rem;
-    object-fit: cover;
-    box-shadow: 10px 10px 0px var(--emphasis-color);
+    -o-object-fit: cover;
+       object-fit: cover;
+    -webkit-box-shadow: 10px 10px 0px var(--emphasis-color);
+            box-shadow: 10px 10px 0px var(--emphasis-color);
 }
 
-.info-container {
-    padding: 0.5rem;
-    font-size: 1.6rem;
-}
-
-.info-container ul {
+.about-section ul {
     list-style-type: none;
     padding: 0;
     margin: 0.7rem 0;
 }
 
-@media screen and (min-width: 425px) {
-    .info-container {
-        font-size: 1.8rem;
-    }
+.about-section-info {
+    padding: 0.5rem 0;
+    max-width: 60rem;
+    margin: 0 auto;
 }
-/* html font size increases */
-@media screen and (min-width: 516px) {
-    .info-container {
-        font-size: 1.5rem;
-    }
+
+.about-section-info h1 {
+    text-align: center;
+    margin: 0 0 0.5rem;
+    font-size: 1.5em;
+}
+
+.about-section-info h1:first-child {
+    font-size: 2.5em;
+}
+
+.about-section-info h1:last-child {
+    text-align: left;
+    font-weight: normal;
 }
 
 @media screen and (min-width: 768px) {
-    .info-container {
-        font-size: 1.7rem;
+    .about-section-info h1 {
+        font-size: 2em;
     }
-}
 
-@media screen and (min-width: 928px) {
-    .info-container {
-        font-size: 2rem;
+    .about-section-info h1:first-child {
+        font-size: 3em;
     }
-}
 
-.jhair-info {
-    padding: 0.5rem;
-    max-width: 60rem;
-    margin: 0 auto;
+    .about-section-info {
+        padding: 0.5rem;
+    }
 }
