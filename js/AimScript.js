@@ -45,69 +45,51 @@ document.getElementById('close_results').onclick = (event) => {
 }
 
 function FocusTimer(timer) {
-	let timeString = '';
-	let keyDownController = new AbortController();
-
-	//Make timer look focused.
-	timer.style.boxShadow = '0px 0px 30px 5px var(--secondary)';
-
-	document.addEventListener('keydown', function (key) {
-		//Check for the press key
-		//If the key is Backspace delete last digit.
-		if (key.key == 'Backspace') {
-			if (timeString.length > 0) {
-				timeString = timeString.slice(0, timeString.length - 1);
-			}
-		}
-		//If the key is a number add it at last.
-		else if (key.key.match(/[0-9]/g) && timeString.length < 6) {
-			timeString += key.key;
-		}
-
-		const digits = timeString.split('');
-		digits.reverse();
-
-		//Seconds
-		let ss = '';
-		//Minutes
-		let mm = '';
-		//Hours
-		let hh = '';
-
-		//Put the digits in their corresponding unit.
-		for (let i = 0; i < digits.length; i++) {
-			if (i < 2) {
-				ss += digits[i];
-			}
-
-			if (i >= 2 && i <= 3) {
-				mm += digits[i];
-			}
-
-			if (i >= 4) {
-				hh += digits[i];
-			}
-		}
-
-		//Reverse the digits and pad them with 0s.
-		ss = ss.split('').reverse().join('').padStart(2, '0');
-		mm = mm.split('').reverse().join('').padStart(2, '0');
-		hh = hh.split('').reverse().join('').padStart(2, '0');
-
-		timer.innerHTML = `${hh}:${mm}:${ss}`;
-	}, {signal: keyDownController.signal});
-
-	//Event that unfocus the timer
-	document.addEventListener('mousedown', UnfocusTimer)
-
-	function UnfocusTimer() {
-		keyDownController.abort();
-		//Make timer look unfocus.
-		timer.style.boxShadow = 'none';
-		document.removeEventListener('mousedown', UnfocusTimer)
-	}
+	let timeString = ''; // The current time input value as a string
+	let keyDownController = new AbortController(); // AbortController to cancel the keydown event listener
+  
+	const updateTimer = () => {
+	  // Update the timer element with the current time value
+	  const digits = timeString.split('').reverse();
+	  const ss = digits.slice(0, 2).reverse().join('').padStart(2, '0');
+	  const mm = digits.slice(2, 4).reverse().join('').padStart(2, '0');
+	  const hh = digits.slice(4, 6).reverse().join('').padStart(2, '0');
+	  timer.innerHTML = `${hh}:${mm}:${ss}`;
+	};
+  
+	const handleKeyDown = (event) => {
+	  // Handle keydown events to update the time input value
+	  const key = event.key;
+	  if (key === 'Backspace') {
+		timeString = timeString.slice(0, -1);
+	  } else if (!key.startsWith('F') && /[0-9]/.test(key) && timeString.length < 6) {
+		timeString += key;
+	  }
+	  updateTimer();
+	};
+  
+	const handleMouseDown = () => {
+	  // Handle mousedown events to remove the focus behavior from the timer element
+	  keyDownController.abort();
+	  timer.style.boxShadow = 'none';
+	  document.removeEventListener('keydown', handleKeyDown);
+	  document.removeEventListener('mousedown', handleMouseDown);
+	};
+  
+	timer.addEventListener('mousedown', (event) => {
+	  // Add the focus behavior to the timer element on mousedown events
+	  event.stopPropagation();
+	  keyDownController = new AbortController();
+	  timer.style.boxShadow = '0px 0px 30px 5px var(--secondary)';
+	  timeString = '';
+	  updateTimer();
+	  document.addEventListener('keydown', handleKeyDown, {
+		signal: keyDownController.signal
+	  });
+	  document.addEventListener('mousedown', handleMouseDown);
+	});
 }
-
+  
 function StartGameAnimation() {
 	const container = document.getElementById('gameContainer');
 

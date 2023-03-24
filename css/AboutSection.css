@@ -3,15 +3,14 @@
 }
 
 .about-section-image {
-    width: calc(100% - 1.5rem);
-    height: 20rem;
-    max-width: 60rem;
+    height: auto;
+    max-width: calc(100% - 1.5rem);
     display: block;
     margin: 0 auto 1rem;
     -o-object-fit: cover;
-       object-fit: cover;
+    object-fit: contain;
     -webkit-box-shadow: 10px 10px 0px var(--emphasis-color);
-            box-shadow: 10px 10px 0px var(--emphasis-color);
+    box-shadow: 10px 10px 0px var(--emphasis-color);
 }
 
 .about-section ul {

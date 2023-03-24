@@ -69,7 +69,7 @@ function GameCover(height) {
 }
 function StartGame() {
     return __awaiter(this, void 0, void 0, function () {
-        var sizeInput, size, AmountOfRowsandCols, gamePanel;
+        var sizeInput, size, RowsAndCols, gamePanel;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -82,14 +82,14 @@ function StartGame() {
                     _a.sent();
                     //Hide menu user interface.
                     ToggleUserInterface(true);
-                    AmountOfRowsandCols = CalculateRowsAndColumns(size);
+                    RowsAndCols = CalculateRowsAndColumns(size);
                     //Pass the size to a top panel element.
-                    document.getElementById("size-display").innerHTML = size.toString();
+                    document.getElementById("size-display").innerHTML = "".concat(size, " (").concat(RowsAndCols.rows, ", ").concat(RowsAndCols.columns, ")");
                     gamePanel = document.createElement("div");
                     gamePanel.id = "game-panel";
                     gamePanel.className = "game-panel";
                     document.getElementById("background").appendChild(gamePanel);
-                    CreateCards(AmountOfRowsandCols, gamePanel);
+                    CreateCards(RowsAndCols, size, gamePanel);
                     return [2 /*return*/];
             }
         });
@@ -97,11 +97,11 @@ function StartGame() {
 }
 //Array that will contain all the cards when game starts.
 var gameCards = [];
-function CreateCards(RowsACols, panel) {
+function CreateCards(RowsACols, size, panel) {
     //Empty array.
     gameCards.splice(0, gameCards.length);
     //Create rows and colums, add the respective classes and append the columns to the rows and the rows to the game panel.
-    CreateRowsAndColumns(RowsACols, panel);
+    CreateRowsAndColumns(RowsACols, size, panel);
     //Just shuffle the array of cards with a method that I found on StackOverflow.
     Shuffle(gameCards);
     //Set the secretId, complete and image fields to the cards in pairs.
@@ -110,14 +110,14 @@ function CreateCards(RowsACols, panel) {
         var card1 = gameCards[i];
         //One way to get the second card for the pair.
         var card2 = gameCards[i + gameCards.length / 2];
-        SetCardsSecretId(card1, card2, idArray);
         card1.complete = false;
         card2.complete = false;
-        //Set the background image of thr cards.
-        getJSON("https://picsum.photos/v2/list?page=".concat(card1.secretId, "&limit=1"), function (imageId) {
+        SetCardsSecretId(card1, card2, idArray);
+        //Set the background image of the cards.
+        getPicsum("https://picsum.photos/v2/list?page=".concat(card1.secretId, "&limit=1"), function (imageId) {
             //Use the id to get a downgraded in quality version of the image.
-            card1.style.background = "url(https://picsum.photos/id/".concat(imageId, "/").concat(card1.offsetWidth, "/").concat(card1.offsetHeight, ")");
-            card2.style.background = card1.style.background;
+            card1.style.backgroundImage = "url(https://picsum.photos/id/".concat(imageId, "/").concat(card1.offsetWidth, "/").concat(card1.offsetHeight, ")");
+            card2.style.backgroundImage = card1.style.backgroundImage;
         });
         //When the last card is created.
         if (i + 1 === gameCards.length / 2) {
@@ -149,11 +149,13 @@ function CreateCards(RowsACols, panel) {
     for (var i = 0; i < gameCards.length / 2; i++) {
         _loop_1();
     }
-    function CreateRowsAndColumns(RowsACols, panel) {
-        for (var i_1 = 0; i_1 < RowsACols.rows; i_1++) {
-            //Create a row.
+    function CreateRowsAndColumns(RowsACols, size, panel) {
+        // Create cards until either the specified size or the maximum number of cards is reached
+        var count = 0;
+        for (var i_1 = 0; i_1 < RowsACols.rows && count < size; i_1++) {
             var row = document.createElement("div");
             row.className = "rows";
+            row.id = count.toString();
             var _loop_2 = function (j) {
                 var cardContainer = document.createElement("div");
                 cardContainer.className = "card-container";
@@ -170,9 +172,9 @@ function CreateCards(RowsACols, panel) {
                 };
                 gameCards.push(card);
                 row.appendChild(cardContainer);
+                count++;
             };
-            //Fill the row with columns (card containers).
-            for (var j = 0; j < RowsACols.columns; j++) {
+            for (var j = 0; j < RowsACols.columns && count < size; j++) {
                 _loop_2(j);
             }
             panel.appendChild(row);
@@ -193,7 +195,7 @@ function CreateCards(RowsACols, panel) {
         } while (card1.secretId === -1);
     }
 }
-function getJSON(url, callback) {
+function getPicsum(url, callback) {
     var xhttp = new XMLHttpRequest();
     xhttp.open('GET', url);
     xhttp.responseType = 'json';
@@ -325,39 +327,14 @@ function ToggleUserInterface(toggle, ShowSecondMenu) {
         document.getElementById("second-menu").style.display = "none";
     }
 }
-function CalculateRowsAndColumns(size) {
-    //if size is 2 just return this value, the method can't figure it out 2.
-    if (size === 2) {
-        return { rows: 1, columns: 2 };
+function CalculateRowsAndColumns(num) {
+    var sqrt = Math.sqrt(num);
+    var rows = Math.floor(sqrt);
+    var columns = Math.ceil(sqrt);
+    while (rows * columns < num) {
+        rows++;
     }
-    var divisors = [];
-    //find all the divisor of size. (there is maybe not need for an array, but is more readable)
-    for (var i = 2; i < size; i++) {
-        if (size % i === 0) {
-            divisors.push(i);
-        }
-    }
-    var pairs = [];
-    //finds the pairs of divisors that when multiplicated return the size.
-    for (var i_2 = 0; i_2 < divisors.length; i_2++) {
-        for (var j = 0; j < divisors.length; j++) {
-            if (divisors[i_2] * divisors[j] === size) {
-                //Columns have to be bigger than rows.
-                if (divisors[i_2] >= divisors[j]) {
-                    pairs.push({ rows: divisors[j], columns: divisors[i_2] });
-                }
-            }
-        }
-    }
-    var output = { rows: pairs[0].rows, columns: pairs[0].columns };
-    //find the pair whose values a the closest by calculating the average, that is the lowest average.
-    for (var i_3 = 0; i_3 < pairs.length; i_3++) {
-        var average = (output.rows + output.columns) / 2;
-        if (average > (pairs[i_3].rows + pairs[i_3].columns) / 2) {
-            output = pairs[i_3];
-        }
-    }
-    return output;
+    return { rows: rows, columns: columns };
 }
 function Shuffle(array) {
     var _a;
@@ -369,6 +346,5 @@ function Shuffle(array) {
             array[randomIndex], array[currentIndex]
         ], array[currentIndex] = _a[0], array[randomIndex] = _a[1];
     }
-    return array;
 }
 //# sourceMappingURL=MatchingScript.js.map

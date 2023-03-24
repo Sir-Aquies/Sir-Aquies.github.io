@@ -74,7 +74,7 @@ input, button {
 	grid-template-rows: auto auto;
 	row-gap: 8%;
 	-ms-flex-line-pack: center;
-	    align-content: center;
+	align-content: center;
 	padding: 1rem;
 	position: absolute;
 	left: 0;
@@ -241,7 +241,7 @@ input, button {
 	background-size: cover;
 	border-radius: 5px;
 	-webkit-transform: translateZ(10px);
-	        transform: translateZ(10px);
+	transform: translateZ(10px);
 	position: absolute;
 }
 

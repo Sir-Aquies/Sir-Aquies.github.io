@@ -29,6 +29,7 @@
 }
 
 //TODO - Add a way to scroll the game panel easier, loading bar.
+//TODO - different API modes.
 
 //(Rows and Columns) Interface that holds the number of rows and columns.
 interface RaC {
@@ -61,10 +62,10 @@ async function StartGame() {
 	//Hide menu user interface.
 	ToggleUserInterface(true);
 
-	const AmountOfRowsandCols = CalculateRowsAndColumns(size) as RaC;
+	const RowsAndCols = CalculateRowsAndColumns(size) as RaC;
 
 	//Pass the size to a top panel element.
-	document.getElementById("size-display").innerHTML = size.toString();
+	document.getElementById("size-display").innerHTML = `${size} (${RowsAndCols.rows}, ${RowsAndCols.columns})`;
 
 	//create game panel, so when game is completed just call .remove() and delete it along with its children.
 	const gamePanel = document.createElement("div") as HTMLDivElement;
@@ -72,7 +73,7 @@ async function StartGame() {
 	gamePanel.className = "game-panel";
 	document.getElementById("background").appendChild(gamePanel);
 
-	CreateCards(AmountOfRowsandCols, gamePanel);
+	CreateCards(RowsAndCols, size, gamePanel);
 }
 
 interface CardContainer extends HTMLDivElement {
@@ -90,12 +91,12 @@ interface Card extends HTMLDivElement {
 //Array that will contain all the cards when game starts.
 const gameCards: Card[] = [];
 
-function CreateCards(RowsACols: RaC, panel: HTMLDivElement): void {
+function CreateCards(RowsACols: RaC, size: number, panel: HTMLDivElement): void {
 	//Empty array.
 	gameCards.splice(0, gameCards.length);
 
 	//Create rows and colums, add the respective classes and append the columns to the rows and the rows to the game panel.
-	CreateRowsAndColumns(RowsACols, panel);
+	CreateRowsAndColumns(RowsACols, size, panel);
 
 	//Just shuffle the array of cards with a method that I found on StackOverflow.
 	Shuffle(gameCards);
@@ -107,16 +108,16 @@ function CreateCards(RowsACols: RaC, panel: HTMLDivElement): void {
 		//One way to get the second card for the pair.
 		const card2 = gameCards[i + gameCards.length / 2];
 
-		SetCardsSecretId(card1, card2, idArray);
-		
 		card1.complete = false;
 		card2.complete = false;
 
-		//Set the background image of thr cards.
-		getJSON(`https://picsum.photos/v2/list?page=${ card1.secretId }&limit=1`, (imageId: number) => {
+		SetCardsSecretId(card1, card2, idArray);
+		
+		//Set the background image of the cards.
+		getPicsum(`https://picsum.photos/v2/list?page=${ card1.secretId }&limit=1`, (imageId: number) => {
 			//Use the id to get a downgraded in quality version of the image.
-			card1.style.background = `url(https://picsum.photos/id/${ imageId }/${ card1.offsetWidth }/${ card1.offsetHeight })`;
-			card2.style.background = card1.style.background;
+			card1.style.backgroundImage = `url(https://picsum.photos/id/${ imageId }/${ card1.offsetWidth }/${ card1.offsetHeight })`;
+			card2.style.backgroundImage = card1.style.backgroundImage;
 		});
 		
 		//When the last card is created.
@@ -134,36 +135,38 @@ function CreateCards(RowsACols: RaC, panel: HTMLDivElement): void {
 		}
 	}
 
-	function CreateRowsAndColumns(RowsACols: RaC, panel: HTMLDivElement) {
-		for (let i = 0; i < RowsACols.rows; i++) {
-			//Create a row.
-			const row = document.createElement("div") as HTMLDivElement;
-			row.className = "rows";
-	
-			//Fill the row with columns (card containers).
-			for (let j = 0; j < RowsACols.columns; j++) {
-				const cardContainer = document.createElement("div") as CardContainer;
-				cardContainer.className = "card-container";
-	
-				const card = document.createElement("div") as Card;
-				card.className = "cards";
-				cardContainer.card = card;
-				cardContainer.appendChild(card);
-	
-				const cover = document.createElement("div") as HTMLDivElement;
-				cover.className = "card-cover";
-				cardContainer.cover = cover;
-				cardContainer.appendChild(cover);
-				
-				cardContainer.onclick = function () {
-					CompareCard(cardContainer);
-				};
-	
-				gameCards.push(card);
-				row.appendChild(cardContainer);
-			}
-	
-			panel.appendChild(row);
+	function CreateRowsAndColumns(RowsACols: RaC, size: number, panel: HTMLDivElement) {
+		// Create cards until either the specified size or the maximum number of cards is reached
+		let count = 0;
+		for (let i = 0; i < RowsACols.rows && count < size; i++) {
+		  const row = document.createElement("div") as HTMLDivElement;
+		  row.className = "rows";
+		  row.id = count.toString();
+
+		  for (let j = 0; j < RowsACols.columns && count < size; j++) {
+			const cardContainer = document.createElement("div") as CardContainer;
+			cardContainer.className = "card-container";
+	  
+			const card = document.createElement("div") as Card;
+			card.className = "cards";
+			cardContainer.card = card;
+			cardContainer.appendChild(card);
+	  
+			const cover = document.createElement("div") as HTMLDivElement;
+			cover.className = "card-cover";
+			cardContainer.cover = cover;
+			cardContainer.appendChild(cover);
+	  
+			cardContainer.onclick = function () {
+			  CompareCard(cardContainer);
+			};
+	  
+			gameCards.push(card);
+			row.appendChild(cardContainer);
+			count++;
+		  }
+	  
+		  panel.appendChild(row);
 		}
 	}
 
@@ -185,7 +188,7 @@ function CreateCards(RowsACols: RaC, panel: HTMLDivElement): void {
 	}
 }
 
-function getJSON(url: string, callback: Function) {
+function getPicsum(url: string, callback: Function) {
 	const xhttp = new XMLHttpRequest();
 	xhttp.open('GET', url);
 	xhttp.responseType = 'json';
@@ -313,47 +316,17 @@ function ToggleUserInterface(toggle: boolean, ShowSecondMenu = false) {
 		document.getElementById("second-menu").style.display = "none";
 	}
 }
+  
+function CalculateRowsAndColumns(num: number): RaC {
+	const sqrt = Math.sqrt(num);
+	let rows = Math.floor(sqrt);
+	let columns = Math.ceil(sqrt);
 
-function CalculateRowsAndColumns(size: number): RaC {
-	//if size is 2 just return this value, the method can't figure it out 2.
-	if (size === 2) {
-		return { rows: 1, columns: 2 } as RaC;
+	while (rows * columns < num) {
+		rows++;
 	}
 
-	const divisors: number[] = [];
-
-	//find all the divisor of size. (there is maybe not need for an array, but is more readable)
-	for (var i = 2; i < size; i++) {
-		if (size % i === 0) {
-			divisors.push(i);
-		}
-	}
-
-	const pairs: RaC[] = [];
-
-	//finds the pairs of divisors that when multiplicated return the size.
-	for (let i = 0; i < divisors.length; i++) {
-		for (let j = 0; j < divisors.length; j++) { 
-			if (divisors[i] * divisors[j] === size) {
-				//Columns have to be bigger than rows.
-				if (divisors[i] >= divisors[j]) {
-					pairs.push({ rows: divisors[j], columns: divisors[i] });
-				}
-			}
-		}
-	}
-	
-	let output: RaC = { rows: pairs[0].rows, columns: pairs[0].columns };
-
-	//find the pair whose values a the closest by calculating the average, that is the lowest average.
-	for (let i = 0; i < pairs.length; i++) {
-		let average: number = (output.rows + output.columns) / 2;
-		if (average > (pairs[i].rows + pairs[i].columns) / 2) {
-			output = pairs[i];
-		}
-	}
-
-	return output;
+	return { rows, columns };
 }
 
 function Shuffle(array: Card[]) {
@@ -366,6 +339,4 @@ function Shuffle(array: Card[]) {
 		[array[currentIndex], array[randomIndex]] = [
 			array[randomIndex], array[currentIndex]];
 	}
-
-	return array;
 }
