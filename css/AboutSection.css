@@ -1,5 +1,6 @@
 .about-section {
     padding-top: 1.5rem;
+    background: var(--quaternary-color);
 }
 
 .about-section-image {
