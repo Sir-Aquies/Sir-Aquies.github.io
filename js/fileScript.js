@@ -148,24 +148,7 @@ function DeleteFile(fileName) {
 }
 
 function UploadFiles() {
-    if (fileStorage.length === 0){
-        alert('There no files to upload');
-        return;
-    }
-
-    const formData = new FormData();
-    fileStorage.forEach(file => {
-        formData.append(file.name, file)
-    });
-
-    const xhttp = new XMLHttpRequest();
-
-    xhttp.onload = function() {
-
-    }
-
-    xhttp.open('POST', 'url', true);
-    xhttp.send(formData);
+    
 }
 
 function returnFileSize(number) {
