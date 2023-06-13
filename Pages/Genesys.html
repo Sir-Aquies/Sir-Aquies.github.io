@@ -26,12 +26,6 @@
         environment: 'usw2',
         deploymentId: '4e5598f3-c090-4976-9624-8ab85d0cb571'
       });
-
-      // Genesys("command", "Database.set", { messaging: { customAttributes: { 
-      //   firstname: 'Jhair',
-      //   lastname: 'Castillo',
-      //   email: ''
-      // }}});
     </script>
 
     <script type="text/javascript">
@@ -51,6 +45,12 @@
       // });
 
       // Genesys("command", "Launcher.hide");
+
+      Genesys("command", "Database.set", { messaging: { customAttributes: { 
+        firstname: 'Jhair',
+        lastname: 'Castillo',
+        email: ''
+      }}});
     </script>
   </body>
 </html>
