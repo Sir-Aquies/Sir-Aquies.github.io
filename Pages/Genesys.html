@@ -20,8 +20,7 @@
         ys = document.createElement('script'); ys.async = 1; ys.src = n; ys.charset = 'utf-8'; document.head.appendChild(ys);
       })(window, 'Genesys', 'https://apps.usw2.pure.cloud/genesys-bootstrap/genesys.min.js', {
         environment: 'usw2',
-        deploymentId: '4e5598f3-c090-4976-9624-8ab85d0cb571',
-        debug: true
+        deploymentId: '4e5598f3-c090-4976-9624-8ab85d0cb571'
       });
 
       // Genesys("command", "Database.set", { messaging: { customAttributes: { 
@@ -30,8 +29,14 @@
       //   email: ''
       // }}});
 
-      window.onload(() => {
-        Genesys("command", "Launcher.hide");
+      // window.onload(() => {
+      //   Genesys("command", "Launcher.hide");
+      // });
+    </script>
+
+    <script type="text/javascript" charset="utf-8" defer>
+      Genesys("subscribe", "Launcher.ready" , function(o){
+        console.log("The queue works!");
       });
     </script>
   </body>
