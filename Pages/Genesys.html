@@ -35,9 +35,11 @@
     </script>
 
     <script type="text/javascript" charset="utf-8" defer>
-      Genesys("subscribe", "Launcher.ready" , function(o){
-        console.log("The queue works!");
-      });
+      // Genesys("subscribe", "Launcher.ready" , function(o){
+      //   console.log("The queue works!");
+      // });
+
+      Genesys("command", "Launcher.hide");
     </script>
   </body>
 </html>
